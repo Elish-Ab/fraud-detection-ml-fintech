@@ -1,160 +1,151 @@
-# data_clean.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import ipaddress
-from sklearn.preprocessing import StandardScaler
-import logging
-def handle_missing_values(df):
-    """
-    Display missing value counts and drop rows missing critical values.
-    """
-    logging.info("Missing values before cleaning:")
-    logging.info(df.isnull().sum())
-    df = df.dropna(subset=['user_id', 'purchase_value', 'purchase_time'])
-    return df
 
-def remove_duplicates_and_convert_types(df):
-    """
-    Remove duplicate rows and convert time columns to datetime.
-    """
-    logging.info("Removing duplicates and converting time columns to datetime...")
-    df = df.drop_duplicates()
+# Function to load data
+def load_data(file_path):
+    return pd.read_csv(file_path)
+
+# Function to handle missing values
+def handle_missing_values(df):
+    return df.dropna()
+
+# Function to remove duplicates
+def remove_duplicates(df):
+    return df.drop_duplicates()
+
+# Function to correct data types
+def correct_data_types(df):
     df['signup_time'] = pd.to_datetime(df['signup_time'])
     df['purchase_time'] = pd.to_datetime(df['purchase_time'])
     return df
-def univariate_analysis(df):
-    """
-    Performs univariate analysis on numerical and categorical features.
+
+# Function to perform exploratory data analysis
+def exploratory_data_analysis(df):
+    print("Data Summary:")
+    print(df.describe())
+    print("\nMissing Values:")
+    print(df.isnull().sum())
     
-    Args:
-        df (pd.DataFrame): The fraud dataset.
+    # Transaction count
+    print("\nTransaction Count:", len(df))
     
-    Returns:
-        None
-    """
-    logging.info("Performing univariate analysis...")
-    # Identify numerical and categorical columns
-    numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns
-    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
-
-    # Plot histograms and boxplots for numerical features
-    for col in numerical_cols:
-        plt.figure(figsize=(12, 5))
-        
-        # Histogram
-        plt.subplot(1, 2, 1)
-        sns.histplot(df[col], bins=30, kde=True)
-        plt.title(f'Histogram of {col}')
-        
-        # Boxplot
-        plt.subplot(1, 2, 2)
-        sns.boxplot(x=df[col])
-        plt.title(f'Boxplot of {col}')
-        
-        plt.tight_layout()
-        plt.show()
+    # Average fraud and non-fraud transaction values
+    avg_fraud = df[df['class'] == 1]['purchase_value'].mean()
+    avg_non_fraud = df[df['class'] == 0]['purchase_value'].mean()
+    print("\nAverage Fraud Transaction Value:", avg_fraud)
+    print("Average Non-Fraud Transaction Value:", avg_non_fraud)
     
-    # Plot count plots for categorical features
-    for col in categorical_cols:
-        plt.figure(figsize=(8, 5))
-        sns.countplot(x=df[col], order=df[col].value_counts().index)
-        plt.title(f'Count Plot of {col}')
-        plt.xticks(rotation=45)
-        plt.show()
-
-
-def bivariate_analysis(fraud_df):
-    """
-    Performs bivariate analysis on the fraud dataset.
-
-    Args:
-        fraud_df (pd.DataFrame): The cleaned fraud dataset.
-    """
-    print(fraud_df.columns)
-    logging.info(fraud_df.columns)
-    logging.info("Performing bivariate analysis...")
-    # 1. Purchase Value vs. Age
-    plt.figure(figsize=(10, 6))
-    sns.scatterplot(x='age', y='purchase_value', data=fraud_df)
-    plt.title('Purchase Value vs. Age')
-    plt.xlabel('Age')
-    plt.ylabel('Purchase Value ($)')
+    # Fraud rate by hour
+    df['transaction_hour'] = df['purchase_time'].dt.hour
+    fraud_hourly = df.groupby('transaction_hour')['class'].mean()
+    
+    # Visualizations
+    plt.figure(figsize=(10, 5))
+    sns.countplot(x='class', data=df)
+    plt.title('Fraud (1) vs Non-Fraud (0) Transactions')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    sns.boxplot(x='class', y='purchase_value', data=df)
+    plt.title('Transaction Value Distribution by Fraud Status')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    sns.histplot(df['purchase_value'], bins=50, kde=True)
+    plt.title('Distribution of Purchase Value')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    sns.lineplot(x=fraud_hourly.index, y=fraud_hourly.values)
+    plt.title('Fraud Rate by Hour of the Day')
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Fraud Rate')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    fraud_daywise = df.groupby(df['purchase_time'].dt.dayofweek)['class'].mean()
+    sns.barplot(x=fraud_daywise.index, y=fraud_daywise.values)
+    plt.title('Fraud Rate by Day of the Week')
+    plt.xlabel('Day of the Week (0=Monday)')
+    plt.ylabel('Fraud Rate')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+    plt.title('Feature Correlation Heatmap')
     plt.show()
 
-    # 2. Purchase Value vs. Transaction Count
-    plt.figure(figsize=(10, 6))
-    sns.scatterplot(x='transaction_count', y='purchase_value', data=fraud_df)
-    plt.title('Purchase Value vs. Transaction Count')
-    plt.xlabel('Transaction Count')
-    plt.ylabel('Purchase Value ($)')
+# Function to merge datasets for geolocation analysis
+def merge_datasets(fraud_df, ip_df):
+    ip_df['lower_bound_ip_address'] = ip_df['lower_bound_ip_address'].astype(int)
+    ip_df['upper_bound_ip_address'] = ip_df['upper_bound_ip_address'].astype(int)
+    fraud_df['ip_address'] = fraud_df['ip_address'].astype(int)
+    merged_df = fraud_df.merge(ip_df, how='left', left_on='ip_address', right_on='lower_bound_ip_address')
+    return merged_df
+
+# Function to engineer features
+def feature_engineering(df):
+    df['transaction_hour'] = df['purchase_time'].dt.hour
+    df['transaction_day_of_week'] = df['purchase_time'].dt.dayofweek
+    df['time_diff_signup_purchase'] = (df['purchase_time'] - df['signup_time']).dt.total_seconds() / 3600
+    df['is_night_transaction'] = df['transaction_hour'].apply(lambda x: 1 if 0 <= x < 6 else 0)
+    df['fraud_rate_by_browser'] = df.groupby('browser')['class'].transform('mean')
+    df['fraud_rate_by_source'] = df.groupby('source')['class'].transform('mean')
+    return df
+
+# Function to visualize new features
+def visualize_new_features(df):
+    # Visualize time difference between signup and purchase
+    plt.figure(figsize=(10, 5))
+    sns.histplot(df['time_diff_signup_purchase'], bins=50, kde=True)
+    plt.title('Distribution of Time Difference (Signup to Purchase in Hours)')
+    plt.xlabel('Hours')
+    plt.ylabel('Frequency')
+    plt.show()
+    
+    plt.figure(figsize=(10, 5))
+    sns.boxplot(x='class', y='time_diff_signup_purchase', data=df)
+    plt.title('Time Difference (Signup to Purchase) by Fraud Status')
+    plt.xlabel('Fraud (1) vs Non-Fraud (0)')
+    plt.ylabel('Hours')
+    plt.show()
+    
+    # Visualize night transactions count
+    plt.figure(figsize=(10, 5))
+    sns.countplot(x='is_night_transaction', data=df)
+    plt.title('Count of Night vs. Day Transactions')
+    plt.xlabel('Is Night Transaction (1=Yes, 0=No)')
+    plt.show()
+    
+    # Fraud rate by browser visualization - bar plot
+    plt.figure(figsize=(12, 6))
+    fraud_rate_browser = df.groupby('browser')['class'].mean().sort_values(ascending=False)
+    sns.barplot(x=fraud_rate_browser.index, y=fraud_rate_browser.values, palette='viridis')
+    plt.title('Fraud Rate by Browser')
+    plt.xlabel('Browser')
+    plt.ylabel('Fraud Rate')
+    plt.xticks(rotation=45)
+    plt.show()
+    
+    # Fraud rate by source visualization - bar plot
+    plt.figure(figsize=(12, 6))
+    fraud_rate_source = df.groupby('source')['class'].mean().sort_values(ascending=False)
+    sns.barplot(x=fraud_rate_source.index, y=fraud_rate_source.values, palette='magma')
+    plt.title('Fraud Rate by Source')
+    plt.xlabel('Source')
+    plt.ylabel('Fraud Rate')
+    plt.xticks(rotation=45)
     plt.show()
 
-    # 3. Correlation Heatmap
-    plt.figure(figsize=(10, 6))
-    sns.heatmap(fraud_df[['purchase_value', 'age', 'transaction_count']].corr(), annot=True, cmap='coolwarm', fmt=".2f")
-    plt.title("Correlation Heatmap")
-    plt.show()
+# Function to normalize and scale features
+def normalize_scale_features(df, columns):
+    from sklearn.preprocessing import MinMaxScaler
+    scaler = MinMaxScaler()
+    df[columns] = scaler.fit_transform(df[columns])
+    return df
 
-
-def ip_to_int(ip):
-    """
-    Converts an IP address string to an integer.
-    """
-    try:
-        logging.info(f"Converting IP address {ip} to integer...")
-        return int(ipaddress.ip_address(ip))
-    except Exception:
-        logging.error(f"Invalid IP address: {ip}")
-        return np.nan
-
-def merge_geolocation(fraud_df, geo_df):
-    """
-    Converts IP addresses to integer format and merges the country info into fraud_df.
-    """
-    logging.info("Merging geolocation data...")
-    # Convert IP addresses to integer
-    fraud_df['ip_int'] = fraud_df['ip_address'].apply(ip_to_int)
-    
-    # Ensure the geo dataset has integer bounds
-    geo_df['lower_bound_ip_address'] = geo_df['lower_bound_ip_address'].astype(np.int64)
-    geo_df['upper_bound_ip_address'] = geo_df['upper_bound_ip_address'].astype(np.int64)
-    
-    def map_ip_to_country(ip_int, geo_df):
-        logging.info(f"Mapping IP address {ip_int} to country...")
-        row = geo_df[(geo_df['lower_bound_ip_address'] <= ip_int) & 
-                     (geo_df['upper_bound_ip_address'] >= ip_int)]
-        if not row.empty:
-            return row.iloc[0]['country']
-        return np.nan
-
-    fraud_df['country'] = fraud_df['ip_int'].apply(lambda x: map_ip_to_country(x, geo_df) if pd.notnull(x) else np.nan)
-    return fraud_df
-
-def feature_engineering(fraud_df):
-    """
-    Creates time-based features, calculates transaction frequency per user,
-    normalizes continuous features, and encodes categorical features.
-    """
-    logging.info("Performing feature engineering...")
-    # Time-based features
-    fraud_df['purchase_hour'] = fraud_df['purchase_time'].dt.hour
-    fraud_df['purchase_day_of_week'] = fraud_df['purchase_time'].dt.dayofweek
-
-    # Transaction frequency per user (velocity)
-    user_tx_counts = fraud_df.groupby('user_id').size().reset_index(name='transaction_count')
-    fraud_df = fraud_df.merge(user_tx_counts, on='user_id', how='left')
-    
-    logging.info(f"normalized continuous features...")
-    
-    # Normalize continuous features
-    scaler = StandardScaler()
-    fraud_df[['purchase_value_scaled', 'age_scaled', 'transaction_count_scaled']] = scaler.fit_transform(
-        fraud_df[['purchase_value', 'age', 'transaction_count']]
-    )
-
-    logging.info("Data hot encoding...")
-    # One-hot encode categorical features (drop first to avoid dummy trap)
-    fraud_df = pd.get_dummies(fraud_df, columns=['source', 'browser', 'sex', 'country'], drop_first=True)
-    return fraud_df
+# Function to encode categorical features
+def encode_categorical_features(df, columns):
+    return pd.get_dummies(df, columns=columns)
