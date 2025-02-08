@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/a65780edc688455cade760ef6b7da407/artifacts
+end_time: 1738990169243
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a65780edc688455cade760ef6b7da407
+run_name: MLP Keras
+run_uuid: a65780edc688455cade760ef6b7da407
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738990002041
+status: 3
+tags: []
+user_id: elisha-a
