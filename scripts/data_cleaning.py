@@ -19,6 +19,18 @@ def remove_duplicates(df):
 def correct_data_types(df):
     df['signup_time'] = pd.to_datetime(df['signup_time'])
     df['purchase_time'] = pd.to_datetime(df['purchase_time'])
+    df['signup_time'] = pd.to_datetime(df['signup_time'], errors='coerce')
+    df['purchase_time'] = pd.to_datetime(df['purchase_time'], errors='coerce')
+
+    # Extract useful features from the 'signup_time' and 'purchase_time' columns
+    df['signup_year'] = df['signup_time'].dt.year
+    df['signup_month'] = df['signup_time'].dt.month
+    df['signup_day'] = df['signup_time'].dt.day
+    df['signup_hour'] = df['signup_time'].dt.hour
+    df['purchase_year'] = df['purchase_time'].dt.year
+    df['purchase_month'] = df['purchase_time'].dt.month
+    df['purchase_day'] = df['purchase_time'].dt.day
+    df['purchase_hour'] = df['purchase_time'].dt.hour
     return df
 
 # Function to perform exploratory data analysis

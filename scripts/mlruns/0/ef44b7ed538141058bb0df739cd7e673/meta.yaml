@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/ef44b7ed538141058bb0df739cd7e673/artifacts
+end_time: 1738971983882
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ef44b7ed538141058bb0df739cd7e673
+run_name: Random Forest
+run_uuid: ef44b7ed538141058bb0df739cd7e673
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738971570962
+status: 3
+tags: []
+user_id: elisha-a

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/c222bc2db461496fa6426892ad54b3b1/artifacts
+end_time: 1738973247713
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c222bc2db461496fa6426892ad54b3b1
+run_name: CNN
+run_uuid: c222bc2db461496fa6426892ad54b3b1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738972910880
+status: 3
+tags: []
+user_id: elisha-a

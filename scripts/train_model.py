@@ -2,12 +2,15 @@ import mlflow
 import mlflow.sklearn
 import mlflow.keras
 
+# Set tracking URI to a running MLflow server (HTTP/HTTPS URI) to avoid the artifact URI error.
+mlflow.set_tracking_uri("http://localhost:5000")
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
-
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.linear_model import LogisticRegression
@@ -197,17 +200,30 @@ if __name__ == '__main__':
     # E-commerce Data Experiment
     # -------------------------
     # Load the cleaned e-commerce data saved from Task 1
-    
-    
-    ecommerce_df = pd.read_csv('../data/cleaned_ecommerce_data.csv')
+    # Assuming 'timestamp_column' is the name of the column with datetime values
+        
+    ecommerce_df = pd.read_csv('../data/Cleaned_Fraud_Data.csv', low_memory=False)
+    print(ecommerce_df.dtypes)
+    # Convert the 'signup_time' and 'purchase_time' columns to datetime format
+    ecommerce_df['signup_time'] = pd.to_datetime(ecommerce_df['signup_time'], errors='coerce')
+    ecommerce_df['purchase_time'] = pd.to_datetime(ecommerce_df['purchase_time'], errors='coerce')
+
+    encoder = LabelEncoder()
+    ecommerce_df['device_id'] = encoder.fit_transform(ecommerce_df['device_id'])
+    # Drop original datetime columns if they are not needed
+    ecommerce_df.drop(columns=['signup_time', 'purchase_time'], inplace=True)
+    # Drop rows where 'country' is 'United States'
+    ecommerce_df = ecommerce_df[ecommerce_df['country'] != 'United States']
+
     print("Training models for E-commerce Data")
-    # The target column for e-commerce is assumed to be 'class'
-    train_all_models(ecommerce_df, 'class')
+    
+    # # The target column for e-commerce is assumed to be 'class'
+    # train_all_models(ecommerce_df, 'class')
     
     # -------------------------
     # Credit Card Data Experiment (Bank Transactions)
     # -------------------------
-    credit_df = pd.read_csv('creditcard.csv')
+    credit_df = pd.read_csv('../data/creditcard.csv')
     print("Training models for Credit Card Data")
     # The target column for credit card data is 'Class'
     train_all_models(credit_df, 'Class')

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/7da139aaddd74320b08e07eb9ea58ba8/artifacts
+end_time: 1738977823521
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7da139aaddd74320b08e07eb9ea58ba8
+run_name: LSTM
+run_uuid: 7da139aaddd74320b08e07eb9ea58ba8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738976996344
+status: 3
+tags: []
+user_id: elisha-a
