@@ -90,12 +90,26 @@ def exploratory_data_analysis(df):
     plt.show()
 
 # Function to merge datasets for geolocation analysis
+def find_country(ip, ip_df):
+    # Ensure ip_df is sorted by lower_bound_ip_address
+    ip_df = ip_df.sort_values(by='lower_bound_ip_address')
+    row = ip_df[(ip_df['lower_bound_ip_address'] <= ip) & (ip_df['upper_bound_ip_address'] >= ip)]
+    return row['country'].values[0] if not row.empty else 'Unknown'
+
 def merge_datasets(fraud_df, ip_df):
+    # Ensure data types are correct
     ip_df['lower_bound_ip_address'] = ip_df['lower_bound_ip_address'].astype(int)
     ip_df['upper_bound_ip_address'] = ip_df['upper_bound_ip_address'].astype(int)
     fraud_df['ip_address'] = fraud_df['ip_address'].astype(int)
-    merged_df = fraud_df.merge(ip_df, how='left', left_on='ip_address', right_on='lower_bound_ip_address')
-    return merged_df
+
+    # Apply range-based lookup for each row
+    fraud_df['country'] = fraud_df['ip_address'].apply(lambda ip: find_country(ip, ip_df))
+    
+    # Optionally handle missing values in 'country'
+    fraud_df['country'].fillna('Unknown', inplace=True)
+    
+    return fraud_df
+
 
 # Function to engineer features
 def feature_engineering(df):
