@@ -6,8 +6,9 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # Load the model from MLflow
-MODEL_URI = "models:/RandomForestModel/1"  # Replace with your registered model URI
+MODEL_URI = "models:/RandomForestModel/1"  
 model = mlflow.sklearn.load_model(MODEL_URI)
+
 
 @app.route('/')
 def home():
