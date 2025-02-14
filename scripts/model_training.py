@@ -1,3 +1,10 @@
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+import tensorflow as tf
+tf.get_logger().setLevel('ERROR')
+
+# Import libraries
+import sys
 import mlflow
 import mlflow.sklearn
 import mlflow.keras
@@ -5,37 +12,52 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sys
+import shap
+
+# Sklearn and other ML libraries
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
+from imblearn.over_sampling import SMOTE
+from sklearn.utils import resample
+
+# TensorFlow and Keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
-from lime import lime_tabular
-from keras.layers import Dense, Conv1D, LSTM, SimpleRNN, Flatten, Reshape
+from tensorflow.keras.layers import LSTM, Dense, Dropout, MaxPooling1D
+from keras.layers import Conv1D, SimpleRNN, Flatten, Reshape
 from keras.optimizers import Adam
-from sklearn.model_selection import StratifiedKFold, GridSearchCV
 
+# Lime and SHAP
+from lime import lime_tabular
 import shap
 
 # Set up MLflow
 mlflow.set_tracking_uri("http://localhost:5000")
-sys.path.append('../scripts') 
+sys.path.append('../scripts')
+
+# Functions
 def prepare_data(df, target_col):
     """
-    Splits the DataFrame into training and testing sets.
+    Splits the DataFrame into training and testing sets and handles class imbalance.
     Assumes the target column exists in the DataFrame.
     """
     X = df.drop(columns=[target_col])
     y = df[target_col]
+    
+    # Handle class imbalance with SMOTE
+    smote = SMOTE(random_state=42)
+    X_res, y_res = smote.fit_resample(X, y)
+    
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+        X_res, y_res, test_size=0.2, random_state=42
     )
+    
     return X_train, X_test, y_train, y_test
 
 def evaluate_model(model, X_test, y_test):
@@ -67,108 +89,6 @@ def train_sklearn_model(model, model_name, X_train, X_test, y_train, y_test, par
         print(f"{model_name}: Accuracy={acc}, F1={f1}, ROC AUC={roc}")
         return model
 
-def create_mlp_model_keras(input_dim):
-    """
-    Creates an MLP model using Keras.
-    """
-    model = Sequential()
-    model.add(Dense(128, input_dim=input_dim, activation='relu'))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))  # Assuming binary classification
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-    return model
-
-def create_cnn_model(input_dim):
-    """
-    Creates a CNN model using Keras for sequence data (1D).
-    """
-    model = Sequential()
-    model.add(Reshape((input_dim, 1), input_shape=(input_dim,)))  # Reshape to add channel dimension
-    model.add(Conv1D(64, 3, activation='relu'))
-    model.add(Conv1D(128, 3, activation='relu'))
-    model.add(Flatten())
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))  # Assuming binary classification
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-    return model
-
-def create_rnn_model(input_dim):
-    """
-    Creates an RNN model using Keras for sequence data.
-    """
-    model = Sequential()
-    model.add(Reshape((input_dim, 1), input_shape=(input_dim,)))  # Reshape to add channel dimension
-    model.add(SimpleRNN(64, activation='relu'))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))  # Assuming binary classification
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-    return model
-
-def create_lstm_model(input_dim):
-    """
-    Creates an LSTM model using Keras for sequence data.
-    """
-    model = Sequential()
-    model.add(Reshape((input_dim, 1), input_shape=(input_dim,)))  # Reshape to add channel dimension
-    model.add(LSTM(64, activation='relu', return_sequences=False))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))  # Assuming binary classification
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-    return model
-
-
-def train_keras_model(model, model_name, X_train, X_test, y_train, y_test, params, epochs=50, batch_size=32):
-    """
-    Trains a Keras model, logs parameters and metrics using MLflow.
-    """
-    with mlflow.start_run(run_name=model_name):
-        mlflow.log_params(params)
-        early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-        history = model.fit(
-            X_train, y_train,
-            validation_split=0.2,
-            epochs=epochs,
-            batch_size=batch_size,
-            callbacks=[early_stopping],
-            verbose=0
-        )
-        loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
-        mlflow.log_metric('accuracy', accuracy)
-        mlflow.keras.log_model(model, model_name)
-        print(f"{model_name} (Keras): Accuracy={accuracy}")
-        return model
-
-def explain_model_with_shap(model, X_test):
-    """
-    Explains the model predictions using SHAP for tree-based models.
-    """
-    shap.initjs()
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(X_test)
-    
-    shap.summary_plot(shap_values[1], X_test, plot_type="bar")
-    shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X_test.iloc[0, :], matplotlib=True)
-    shap.dependence_plot(X_test.columns[0], shap_values[1], X_test)
-
-def explain_model_with_lime(model, X_train, X_test, instance_index=0):
-    """
-    Uses LIME to explain a model's prediction for a single instance.
-    """
-    feature_names = X_train.columns.tolist()
-    lime_explainer = lime_tabular.LimeTabularExplainer(
-        training_data=X_train.values,
-        feature_names=feature_names,
-        mode='classification'
-    )
-    
-    exp = lime_explainer.explain_instance(
-        X_test.iloc[instance_index].values,
-        model.predict_proba,
-        num_features=10
-    )
-    
-    exp.show_in_notebook(show_table=True, show_all=False)
-
 def train_sklearn_model_with_tuning(model, model_name, X_train, X_test, y_train, y_test, params):
     """
     Trains a scikit-learn model with hyperparameter tuning using GridSearchCV.
@@ -193,11 +113,91 @@ def train_sklearn_model_with_tuning(model, model_name, X_train, X_test, y_train,
         print(f"{model_name}: Accuracy={acc}, F1={f1}, ROC AUC={roc}")
         return best_model
 
-# Update train_sklearn_model to include class weight and use GridSearchCV for tuning
+def create_mlp_model_keras(input_dim):
+    """
+    Creates an MLP model in Keras for classification.
+    """
+    model = Sequential()
+    model.add(Dense(128, input_dim=input_dim, activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(32, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))  # For binary classification
+    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+    return model
+
+def create_cnn_model(input_dim):
+    """
+    Creates a CNN model in Keras for classification.
+    """
+    model = Sequential()
+    model.add(Conv1D(64, 2, activation='relu', input_shape=(input_dim, 1)))
+    model.add(MaxPooling1D(2))
+    model.add(Flatten())
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))  # For binary classification
+    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+    return model
+
+def create_lstm_model(input_dim):
+    """
+    Creates an LSTM model in Keras for classification.
+    """
+    model = Sequential()
+    model.add(LSTM(64, input_shape=(input_dim, 1), return_sequences=False))
+    model.add(Dropout(0.2))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))  # For binary classification
+    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+    return model
+
+def create_rnn_model(input_shape):
+    """
+    Create and return an RNN model.
+    """
+    model = Sequential()
+    model.add(SimpleRNN(64, input_shape=input_shape, return_sequences=False))
+    model.add(Dropout(0.2))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))  # For binary classification
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    return model
+
+def train_keras_model(model, model_name, X_train, X_test, y_train, y_test):
+    """
+    Train the Keras model and log metrics.
+    """
+    early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+    
+    print(f"Training {model_name}...")
+    history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=50, batch_size=32, callbacks=[early_stop], verbose=2)
+    
+    # Evaluate model
+    loss, accuracy = model.evaluate(X_test, y_test)
+    print(f"{model_name} - Test Accuracy: {accuracy}, Test Loss: {loss}")
+    
+    # Log model evaluation metrics (you can use MLflow here or another logging method)
+    return history
+
+def explain_model_with_shap(model, X_test):
+    """
+    Explain model predictions using SHAP.
+    Assumes binary classification and uses KernelExplainer.
+    """
+    explainer = shap.KernelExplainer(model.predict, X_test)
+    shap_values = explainer.shap_values(X_test)
+    
+    # Visualize SHAP values with a summary plot
+    shap.summary_plot(shap_values, X_test)
+    
+    # Optionally, visualize individual predictions
+    shap.force_plot(explainer.expected_value[0], shap_values[0][0], X_test.iloc[0])
+    plt.show()  # Ensure SHAP plot is shown
+
 def train_all_models(df, target_col):
     """
     Prepares the data and trains all selected models for both datasets with hyperparameter tuning.
     """
+    print("Preparing data...")
     X_train, X_test, y_train, y_test = prepare_data(df, target_col)
     input_dim = X_train.shape[1]
     
@@ -217,62 +217,34 @@ def train_all_models(df, target_col):
     rf = RandomForestClassifier(class_weight='balanced', n_estimators=100)
     rf_params = {'n_estimators': [50, 100, 200], 'max_depth': [10, 20, None]}
     trained_rf = train_sklearn_model_with_tuning(rf, "Random Forest", X_train, X_test, y_train, y_test, rf_params)
-    
+
     # Gradient Boosting with hyperparameter tuning
     gb = GradientBoostingClassifier()
-    gb_params = {'n_estimators': [50, 100, 200], 'learning_rate': [0.05, 0.1, 0.2], 'max_depth': [3, 5, 7]}
+    gb_params = {'n_estimators': [50, 100], 'max_depth': [3, 5]}
     train_sklearn_model_with_tuning(gb, "Gradient Boosting", X_train, X_test, y_train, y_test, gb_params)
-    
-    # MLP using Scikit-Learn with class weight and hyperparameter tuning
-    mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter=300)
-    mlp_params = {'hidden_layer_sizes': [(50, 50), (100,), (200,)], 'alpha': [0.0001, 0.001]}
-    train_sklearn_model_with_tuning(mlp, "MLP Sklearn", X_train, X_test, y_train, y_test, mlp_params)
-    
-    print("Training Keras Models...")
-    
-    # Convert data to numpy arrays for Keras
-    X_train_np = X_train.to_numpy()
-    X_test_np = X_test.to_numpy()
-    y_train_np = y_train.to_numpy()
-    y_test_np = y_test.to_numpy()
-    
-    # MLP using Keras
-    mlp_keras = create_mlp_model_keras(input_dim)
-    train_keras_model(mlp_keras, "MLP Keras", X_train_np, X_test_np, y_train_np, y_test_np, {'model': 'MLP Keras'})
-    
-    # CNN
-    cnn_model = create_cnn_model(input_dim)
-    train_keras_model(cnn_model, "CNN", X_train_np, X_test_np, y_train_np, y_test_np, {'model': 'CNN'})
-    
-    # RNN
-    rnn_model = create_rnn_model(input_dim)
-    train_keras_model(rnn_model, "RNN", X_train_np, X_test_np, y_train_np, y_test_np, {'model': 'RNN'})
-    
-    # LSTM
-    lstm_model = create_lstm_model(input_dim)
-    train_keras_model(lstm_model, "LSTM", X_train_np, X_test_np, y_train_np, y_test_np, {'model': 'LSTM'})
-    
-    # Return the Random Forest model and both X_train and X_test for explainability
-    return trained_rf, X_train, X_test
 
-# ----------------------
-# Main Execution: Train on Both Datasets
-# ----------------------
-if __name__ == '__main__':
-    # Load the datasets
-    ecommerce_df = pd.read_csv('../data/Preprocessed_Data.csv')
-    creditcard_df = pd.read_csv('../data/creditcard.csv')
+    print("Training Neural Networks (Keras)...")
     
-    print("Training models for E-commerce Data")
-    trained_rf_ecommerce, X_train_ecommerce, X_test_ecommerce = train_all_models(ecommerce_df, 'class')
-    explain_model_with_shap(trained_rf_ecommerce, X_test_ecommerce)
-    explain_model_with_lime(trained_rf_ecommerce, X_train_ecommerce, X_test_ecommerce)
+    # MLP Model
+    mlp_model = create_mlp_model_keras(input_dim)
+    train_keras_model(mlp_model, "MLP Model", X_train, X_test, y_train, y_test)
     
-    print("Training models for E-commerce Data")
-    trained_rf_ecommerce, X_train_ecommerce, X_test_ecommerce = train_sklearn_model_with_tuning(ecommerce_df, 'class')
-    explain_model_with_shap(trained_rf_ecommerce, X_test_ecommerce)
-    explain_model_with_lime(trained_rf_ecommerce, X_train_ecommerce, X_test_ecommerce)
+    # CNN Model
+    cnn_model = create_cnn_model(input_dim)
+    train_keras_model(cnn_model, "CNN Model", X_train, X_test, y_train, y_test)
     
-    print("Training models for Credit Card Data")
-    trained_rf_creditcard, X_train_creditcard, X_test_creditcard = train_all_models(creditcard_df, 'Class')
-    explain_model_with_shap(trained_rf_creditcard,X_train_creditcard,X_test_creditcard)
+    # LSTM Model
+    lstm_model = create_lstm_model(input_dim)
+    train_keras_model(lstm_model, "LSTM Model", X_train, X_test, y_train, y_test)
+    
+    # RNN Model
+    rnn_model = create_rnn_model(X_train.shape[1:])
+    train_keras_model(rnn_model, "RNN Model", X_train, X_test, y_train, y_test)
+    
+    # Explain the best model (RNN in this case) using SHAP
+    explain_model_with_shap(rnn_model, X_test)
+
+# Main Execution (adjust this as per your dataset)
+df = pd.read_csv("../data/Preprocessed_Data.csv") 
+target_col = 'class'  
+train_all_models(df, target_col)

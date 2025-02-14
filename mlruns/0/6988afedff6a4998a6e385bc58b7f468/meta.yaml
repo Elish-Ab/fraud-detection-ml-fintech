@@ -1,8 +1,9 @@
 artifact_uri: mlflow-artifacts:/0/6988afedff6a4998a6e385bc58b7f468/artifacts
+deleted_time: 1739534571360
 end_time: 1739530785490
 entry_point_name: ''
 experiment_id: '0'
-lifecycle_stage: active
+lifecycle_stage: deleted
 run_id: 6988afedff6a4998a6e385bc58b7f468
 run_name: MLP Sklearn
 run_uuid: 6988afedff6a4998a6e385bc58b7f468
