@@ -3,6 +3,8 @@ from dash import dcc, html
 import plotly.express as px
 import pandas as pd
 from flask import Flask, jsonify
+import sys
+sys.path.append('../scripts') 
 # Import cleaning functions from your data_cleaning script
 from scripts.data_cleaning import (
     load_data, 
