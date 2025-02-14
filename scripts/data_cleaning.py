@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, LabelEncoder
 
+import hashlib
 # Function to load data
 def load_data(file_path):
     return pd.read_csv(file_path)
@@ -164,14 +166,36 @@ def visualize_new_features(df):
     plt.ylabel('Fraud Rate')
     plt.xticks(rotation=45)
     plt.show()
-
-# Function to normalize and scale features
-def normalize_scale_features(df, columns):
-    from sklearn.preprocessing import MinMaxScaler
+def preprocess_and_encode(merged_data):   
+    # 1. **Normalization/Scaling** for numerical features
     scaler = MinMaxScaler()
-    df[columns] = scaler.fit_transform(df[columns])
-    return df
 
-# Function to encode categorical features
-def encode_categorical_features(df, columns):
-    return pd.get_dummies(df, columns=columns)
+    # List of numerical columns to normalize
+    numerical_columns = ['purchase_value', 'age', 'time_diff_signup_purchase', 
+                         'fraud_rate_by_browser', 'fraud_rate_by_source', 
+                         'transaction_hour', 'transaction_day_of_week', 
+                         'signup_year', 'purchase_year', 'signup_month', 
+                         'purchase_month', 'signup_day', 'purchase_day', 
+                         'signup_hour', 'purchase_hour']
+
+    # Apply MinMax scaling (Normalization) to numerical columns
+    merged_data[numerical_columns] = scaler.fit_transform(merged_data[numerical_columns])
+
+    # 2. **Label Encoding** for ordinal categorical features (e.g., 'sex', 'source')
+    label_encoder = LabelEncoder()
+
+    # Columns with ordinal categorical data
+    ordinal_columns = ['sex', 'source']
+
+    for col in ordinal_columns:
+        merged_data[col] = label_encoder.fit_transform(merged_data[col])
+
+    # 3. **One-Hot Encoding** for nominal categorical features (e.g., 'browser', 'country')
+    merged_data = pd.get_dummies(merged_data, columns=['browser', 'country'], drop_first=True)
+
+    # 4. **Hashing for high-cardinality columns** (e.g., 'device_id')
+    merged_data['device_id'] = merged_data['device_id'].apply(
+        lambda x: int(hashlib.sha256(x.encode('utf-8')).hexdigest(), 16) % (10 ** 8)  # 8 digits hash
+    )
+
+    return merged_data
