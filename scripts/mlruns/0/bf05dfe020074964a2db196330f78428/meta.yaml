@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/bf05dfe020074964a2db196330f78428/artifacts
+end_time: 1738989954103
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bf05dfe020074964a2db196330f78428
+run_name: Gradient Boosting
+run_uuid: bf05dfe020074964a2db196330f78428
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738989494123
+status: 3
+tags: []
+user_id: elisha-a

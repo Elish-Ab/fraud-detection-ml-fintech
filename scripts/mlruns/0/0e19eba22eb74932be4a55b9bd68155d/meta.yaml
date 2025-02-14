@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/0e19eba22eb74932be4a55b9bd68155d/artifacts
+end_time: 1738991850528
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0e19eba22eb74932be4a55b9bd68155d
+run_name: RNN
+run_uuid: 0e19eba22eb74932be4a55b9bd68155d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738990350979
+status: 3
+tags: []
+user_id: elisha-a
