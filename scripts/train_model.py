@@ -182,9 +182,6 @@ def train_models_on_datasets():
     # Credit Card Data Experiment
     # -------------------------
     credit_df = pd.read_csv('../data/creditcard.csv')
-    # Convert the 'Time' column if necessary; drop it afterward
-    credit_df['Time'] = pd.to_datetime(credit_df['Time'], unit='s', errors='coerce')
-    credit_df = credit_df.drop(columns=['Time'], errors='ignore')  # Drop the Time column (if present)
     try:
         X_train, X_test, y_train, y_test = prepare_data(credit_df, 'Class')
     except ValueError as e:

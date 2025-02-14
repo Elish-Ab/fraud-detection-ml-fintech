@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/6988afedff6a4998a6e385bc58b7f468/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6988afedff6a4998a6e385bc58b7f468
+run_name: MLP Sklearn
+run_uuid: 6988afedff6a4998a6e385bc58b7f468
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739530743450
+status: 1
+tags: []
+user_id: elisha-a
