@@ -4,3 +4,4 @@ scripts/*.csv
 mlartifacts/
 mlartifacts/*.pkl
 mlruns
+project/*.pkl
