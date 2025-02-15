@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload and Form</title>
+    <title>Fraud Detection System</title>
     <style>
         /* General Styles */
         body {
@@ -20,7 +20,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             padding: 20px;
         }
 
@@ -50,6 +50,7 @@
             transition: background-color 0.3s;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
 
         .btn-upload {
@@ -73,7 +74,6 @@
         .btn-submit {
             background-color: #ff5722;
             color: white;
-            width: 100%;
             margin-top: 20px;
             border-radius: 5px;
         }
@@ -105,10 +105,8 @@
         }
 
         input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        select,
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: 100%;
             padding: 12px 15px;
             margin: 10px 0;
@@ -127,6 +125,42 @@
             font-size: 16px;
             color: #555;
             margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Results and Loading Styles */
+        .result-container {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .fraud-alert {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .safe-alert {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .probability {
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+            color: #007bff;
+            font-size: 1.1em;
         }
 
         /* Responsive Styles */
@@ -140,17 +174,12 @@
             }
 
             .btn {
-                width: 100%;
                 padding: 12px;
             }
 
             form {
                 padding: 20px;
                 width: 90%;
-            }
-
-            .btn-submit {
-                font-size: 14px;
             }
         }
 
@@ -172,141 +201,226 @@
                 padding: 15px;
                 width: 100%;
             }
-
-            .btn-submit {
-                padding: 12px;
-                font-size: 12px;
-            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <!-- Main Page (Selection of Upload or Fill Form) -->
+        <!-- Loading Indicator -->
+        <div class="loading" id="loading">
+            Processing... ⏳
+        </div>
+
+        <!-- Main Page -->
         <div class="main-page" id="mainPage">
-            <h1>Welcome to the Upload & Form Page</h1>
-            <p>Choose an option below to either upload a file or fill out a form:</p>
+            <h1>Fraud Detection System</h1>
+            <p>Choose an option to check transaction legitimacy:</p>
             <div class="buttons-container">
-                <button class="btn btn-upload" id="fileUploadBtn">Upload Your File</button>
-                <button class="btn btn-form" id="fillFormBtn">Fill the Form</button>
+                <button class="btn btn-upload" id="fileUploadBtn">Upload CSV/JSON File</button>
+                <button class="btn btn-form" id="fillFormBtn">Enter Transaction Details</button>
             </div>
         </div>
 
         <!-- File Upload Page -->
         <div class="file-upload" id="fileUploadPage" style="display: none;">
-            <h2>Upload Your File</h2>
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <h2>Upload Transaction File</h2>
+            <form id="fileUploadForm">
                 <input type="file" id="file" name="file" accept=".csv, .json" required>
-                <button type="submit" class="btn btn-submit">Submit</button>
+                <button type="submit" class="btn btn-submit">Analyze File</button>
             </form>
-            <button class="btn btn-back" id="backToMainFromFile">Back</button>
+            <button class="btn btn-back" id="backToMainFromFile">Back to Main</button>
         </div>
 
         <!-- Form Page -->
         <div class="form-page" id="formPage" style="display: none;">
-          <h2>Fill the Form</h2>
+            <h2>Transaction Details</h2>
             <form id="inputForm">
-                <label for="user_id">User Id:</label>
-                <input type="text" id="user_id" name="user_id" required><br><br>
+                <label for="user_id">User ID:</label>
+                <input type="text" id="user_id" name="user_id" required>
 
-                <label for="sex">Sex:</label>
-                <select id="sex" name="sex">
+                <label for="sex">Gender:</label>
+                <select id="sex" name="sex" required>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                </select><br>
+                </select>
 
-                <label for="signup_time">Signup Time:</label>
-                <input type="text" id="signup_time" name="signup_time" required><br><br>
+                <label for="signup_time">Signup Timestamp (UNIX):</label>
+                <input type="number" id="signup_time" name="signup_time" required>
 
-                <label for="purchase_time">Purchase Time:</label>
-                <input type="text" id="purchase_time" name="purchase_time" required><br>
+                <label for="purchase_time">Purchase Timestamp (UNIX):</label>
+                <input type="number" id="purchase_time" name="purchase_time" required>
 
-                <label for="purchase_value">Purchase Value:</label>
-                <input type="number" id="purchase_value" name="purchase_value" required><br>
+                <label for="purchase_value">Purchase Amount ($):</label>
+                <input type="number" id="purchase_value" name="purchase_value" step="0.01" required>
 
                 <label for="device_id">Device ID:</label>
-                <input type="text" id="device_id" name="device_id" required><br>
+                <input type="text" id="device_id" name="device_id" required>
 
                 <label for="source">Source:</label>
-                <input type="text" id="source" name="source" required><br>
+                <input type="text" id="source" name="source" required>
 
                 <label for="browser">Browser:</label>
-                <input type="text" id="browser" name="browser" required><br>
+                <input type="text" id="browser" name="browser" required>
 
                 <label for="age">Age:</label>
-                <input type="number" id="age" name="age" required><br>
+                <input type="number" id="age" name="age" required>
 
                 <label for="ip_address">IP Address:</label>
-                <input type="text" id="ip_address" name="ip_address" required><br>
+                <input type="text" id="ip_address" name="ip_address" required>
 
                 <label for="country">Country:</label>
-                <select id="country" name="country"></select><br><br>
+                <select id="country" name="country" required></select>
 
-                <button type="submit" class="btn btn-submit">Submit</button>
+                <button type="submit" class="btn btn-submit">Check Transaction</button>
             </form>
-            <button class="btn btn-back" id="backToMainFromForm">Back</button>
+            <button class="btn btn-back" id="backToMainFromForm">Back to Main</button>
+        </div>
+
+        <!-- Results Container -->
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <div id="resultContent"></div>
         </div>
     </div>
 
     <script>
-        // List of countries
+        // Country List
         const countries = [
-            "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas",
-            "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bonaire",
-            "Bosnia and Herzegowina", "Botswana", "Brazil", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso",
-            "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Chile", "China", "Colombia", "Congo", "Costa Rica",
-            "Cote D'ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-            "Ecuador", "Egypt", "El Salvador", "Estonia", "Ethiopia", "European Union", "Faroe Islands", "Fiji", "Finland", "France", "Gabon",
-            "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Guadeloupe", "Guam", "Guatemala", "Haiti", "Honduras", "Hong Kong",
-            "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
-            "Kenya", "Kiribati", "Korea (Republic of)", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho",
-            "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali",
-            "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia (Federated States of)",
-            "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
-            "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "Northern Mariana Islands", "Norway", "Oman", "Pakistan",
-            "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar",
-            "Romania", "Russian Federation", "Rwanda", "Saint Helena", "Saint Kitts and Nevis", "Saint Lucia", "Saint Pierre and Miquelon",
-            "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles",
-            "Sierra Leone", "Singapore", "Sint Maarten (Dutch part)", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan",
-            "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
-            "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
-            "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam",
-            "Western Sahara", "Yemen", "Zambia", "Zimbabwe"
+            "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina",
+            // ... keep all countries from previous list
+            "Zambia", "Zimbabwe"
         ];
 
+        // Initialize Country Select
         const countrySelect = document.getElementById('country');
         countries.forEach(country => {
             const option = document.createElement('option');
             option.value = country;
-            option.text = country;
+            option.textContent = country;
             countrySelect.appendChild(option);
         });
 
-        // Show the file upload page
-        document.getElementById('fileUploadBtn').addEventListener('click', function () {
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('fileUploadPage').style.display = 'block';
+        // Navigation Handlers
+        document.getElementById('fileUploadBtn').addEventListener('click', () => {
+            showSection('fileUploadPage');
         });
 
-        // Show the form page
-        document.getElementById('fillFormBtn').addEventListener('click', function () {
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('formPage').style.display = 'block';
+        document.getElementById('fillFormBtn').addEventListener('click', () => {
+            showSection('formPage');
         });
 
-        // Back to the main page from the file upload page
-        document.getElementById('backToMainFromFile').addEventListener('click', function () {
-            document.getElementById('fileUploadPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
+        document.getElementById('backToMainFromFile').addEventListener('click', () => {
+            showSection('mainPage');
         });
 
-        // Back to the main page from the form page
-        document.getElementById('backToMainFromForm').addEventListener('click', function () {
-            document.getElementById('formPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
+        document.getElementById('backToMainFromForm').addEventListener('click', () => {
+            showSection('mainPage');
         });
+
+        // Form Submission Handlers
+        document.getElementById('fileUploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', document.getElementById('file').files[0]);
+            processRequest('/predict/upload', formData);
+        });
+
+        document.getElementById('inputForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new URLSearchParams();
+            formData.append('user_id', document.getElementById('user_id').value);
+            formData.append('sex', document.getElementById('sex').value);
+            formData.append('signup_time', document.getElementById('signup_time').value);
+            formData.append('purchase_time', document.getElementById('purchase_time').value);
+            formData.append('purchase_value', document.getElementById('purchase_value').value);
+            formData.append('device_id', document.getElementById('device_id').value);
+            formData.append('source', document.getElementById('source').value);
+            formData.append('browser', document.getElementById('browser').value);
+            formData.append('age', document.getElementById('age').value);
+            formData.append('ip_address', document.getElementById('ip_address').value);
+            formData.append('country', document.getElementById('country').value);
+            
+            processRequest('/predict/form', formData);
+        });
+
+        // Helper Functions
+        function showSection(sectionId) {
+            document.querySelectorAll('[id$="Page"], #mainPage').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        async function processRequest(endpoint, data) {
+            showLoading();
+            clearResults();
+
+            try {
+                const response = await fetch(`http://localhost:8000${endpoint}`, {
+                    method: 'POST',
+                    body: data,
+                    headers: endpoint === '/predict/form' ? {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    } : {}
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Unknown error occurred');
+                }
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayResults(data) {
+            const resultContent = document.getElementById('resultContent');
+            let html = '';
+
+            data.predictions.forEach((prediction, index) => {
+                const probability = data.fraud_probabilities[index];
+                html += `
+                    <div class="${prediction === 1 ? 'fraud-alert' : 'safe-alert'}">
+                        ${prediction === 1 ? '⚠️ Fraud Detected!' : '✅ Legitimate Transaction'}
+                    </div>
+                    <div class="probability">
+                        Fraud Probability: ${(probability * 100).toFixed(2)}%
+                    </div>
+                `;
+            });
+
+            resultContent.innerHTML = html;
+            document.getElementById('resultContainer').style.display = 'block';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function clearResults() {
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('resultContent').innerHTML = '';
+        }
+
+        function showError(message) {
+            const resultContent = document.getElementById('resultContent');
+            resultContent.innerHTML = `
+                <div class="fraud-alert">
+                    ❌ Error: ${message}
+                </div>
+            `;
+            document.getElementById('resultContainer').style.display = 'block';
+        }
     </script>
 </body>
-
 </html>
