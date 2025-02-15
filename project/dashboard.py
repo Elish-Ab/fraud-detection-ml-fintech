@@ -48,10 +48,11 @@ def create_visualizations(df):
     # Fraud Count
     fig_count = px.histogram(
         df, x="class", title="Fraud (1) vs Non-Fraud (0) Transactions",
-        category_orders={'class': [0, 1]}, labels={'class': 'Transaction Type'},
+        category_orders={'class': [0, 1]}, labels={'class': 'Transaction Type (0: Non-Fraud, 1: Fraud)'},
         color_discrete_sequence=["#FF6361", "#58508D"]
     )
     fig_count.update_traces(marker_line_width=1.5, opacity=0.8)
+    fig_count.update_xaxes(title_text='Transaction Type (0: Non-Fraud, 1: Fraud)')
 
     # Boxplot: Transaction Value Distribution
     fig_box = px.box(
@@ -59,8 +60,9 @@ def create_visualizations(df):
         title="Transaction Value Distribution by Fraud Status",
         color="class",
         color_discrete_sequence=["#003F5C", "#FFA600"],
-        labels={'class': 'Fraud Status', 'purchase_value': 'Purchase Value'}
+        labels={'class': 'Fraud Status (0: Non-Fraud, 1: Fraud)', 'purchase_value': 'Purchase Value'}
     )
+    fig_box.update_xaxes(title_text='Fraud Status (0: Non-Fraud, 1: Fraud)')
 
     # Histogram: Purchase Value
     fig_hist = px.histogram(
@@ -73,13 +75,28 @@ def create_visualizations(df):
     fraud_rate_hour = df.groupby('transaction_hour')['class'].mean().reset_index(name='fraud_rate')
     fig_hour = px.line(
         fraud_rate_hour, x='transaction_hour', y='fraud_rate',
-        title="Fraud Rate by Hour of the Day",
+        title="Fraud Rate by Hour of the Day( monday = 0)",
         markers=True, color_discrete_sequence=["#D45087"]
     )
-    
-    return fig_count, fig_box, fig_hist, fig_hour
 
-fig_count, fig_box, fig_hist, fig_hour = create_visualizations(df)
+    # Fraud Rate by Day of the Week
+    fraud_rate_day = df.groupby('day_of_week')['class'].mean().reset_index(name='fraud_rate')
+    fig_day = px.bar(
+        fraud_rate_day, x='day_of_week', y='fraud_rate',
+        title="Fraud Rate by Day of the Week",
+        color_discrete_sequence=["#FFA07A"]
+    )
+
+    # Pie Chart: Fraud vs Non-Fraud Transactions
+    fig_pie = px.pie(
+        df, names='class', title="Proportion of Fraud vs Non-Fraud Transactions",
+        labels={'class': 'Transaction Type (0: Non-Fraud, 1: Fraud)'},
+        color_discrete_sequence=["#FF6361", "#003F5C"]
+    )
+
+    return fig_count, fig_box, fig_hist, fig_hour, fig_day, fig_pie
+
+fig_count, fig_box, fig_hist, fig_hour, fig_day, fig_pie = create_visualizations(df)
 
 # -----------------------------
 # Set Up Flask Server and API
@@ -132,6 +149,11 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(dcc.Graph(id='fig_hist', figure=fig_hist), md=6),
         dbc.Col(dcc.Graph(id='fig_hour', figure=fig_hour), md=6)
+    ]),
+
+    dbc.Row([
+        dbc.Col(dcc.Graph(id='fig_day', figure=fig_day), md=6),
+        dbc.Col(dcc.Graph(id='fig_pie', figure=fig_pie), md=6)
     ]),
 ], fluid=True)
 
