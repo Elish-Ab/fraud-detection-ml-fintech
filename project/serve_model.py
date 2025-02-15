@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify
 import joblib
 import pandas as pd
-
+import os
 app = Flask(__name__)
 
-# Load the trained Random Forest model from model.pkl
-model = joblib.load('model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'model.pkl')
+model = joblib.load(model_path)
 
 # List of one-hot encoded country columns used in training.
 # You must fill in all the country columns from your merged dataset.

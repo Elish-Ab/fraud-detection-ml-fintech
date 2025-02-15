@@ -18,7 +18,7 @@
 <body>
   <div class="container">
     <h1>Fraud Detection Prediction</h1>
-    <p>Enter the transaction details below. All numeric fields should be entered as numbers. For country, enter the country name exactly as used in training (e.g., "United States").</p>
+    <p>Enter the transaction details. For the country field, enter the country name exactly as used during training (e.g., "United States").</p>
     <form id="prediction-form">
       <div class="form-group">
         <label for="user_id">User ID:</label>
@@ -71,7 +71,7 @@
 
   <script>
     function submitPrediction() {
-      // Collect form data into a JSON object.
+      // Gather the input data into a JSON object.
       let data = {
         user_id: document.getElementById("user_id").value,
         signup_time: parseFloat(document.getElementById("signup_time").value),
