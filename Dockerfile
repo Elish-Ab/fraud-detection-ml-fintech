@@ -1,20 +1,17 @@
-# Use an official Python runtime as a parent image
+# Use the official Python image from the Docker Hub
 FROM python:3.10-slim
-
-# Set the working directory in the container
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy only necessary files first to optimize caching
+# Install the dependencies specified in the requirements file
 COPY requirements.txt .
 
-# Install dependencies
+# Copy the rest of the application code into the container
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the entire project directory into the container
 COPY . .
 
-# Expose port 5000 for the Flask API
+# Expose port 5000 to allow external access
 EXPOSE 5000
 
-# Run the model serving script
+# Specify the command to run the application
 CMD ["python", "project/serve_model.py"]

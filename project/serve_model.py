@@ -1,14 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import joblib
 import pandas as pd
 import os
-app = Flask(__name__)
 
+app = Flask(__name__, static_folder=".", static_url_path="")
+
+# Build an absolute path to model.pkl relative to this file
 model_path = os.path.join(os.path.dirname(__file__), 'model.pkl')
 model = joblib.load(model_path)
 
-# List of one-hot encoded country columns used in training.
-# You must fill in all the country columns from your merged dataset.
+# List of one-hot encoded country columns used during training.
 COUNTRY_COLUMNS = [
     'country_Albania', 'country_Algeria', 'country_Angola',
     'country_Antigua and Barbuda', 'country_Argentina', 'country_Armenia',
@@ -74,35 +75,31 @@ COUNTRY_COLUMNS = [
 
 def process_input(data):
     """
-    Process incoming JSON data to create a DataFrame suitable for prediction.
+    Process incoming JSON data to create a DataFrame for prediction.
     
-    Expected keys:
-      - All features required by your model (e.g., user_id, signup_time, purchase_time, purchase_value, etc.)
-      - A "country" field which indicates the country (e.g., "United States").
+    Expected keys include: user_id, signup_time, purchase_time, purchase_value,
+    device_id, source, browser, sex, age, ip_address, and country.
     
-    The function will:
-      1. Copy all incoming features.
-      2. For the country fields (one-hot columns), set all values to 0.
-      3. Set the column corresponding to the provided country to 1.
+    The function removes the "country" key from the data, sets all one-hot encoded
+    country columns to 0, and then sets the column corresponding to the provided
+    country to 1.
     """
-    # Create a copy of the incoming data dictionary
     features = data.copy()
-
-    # Remove the country input from the features (we'll use it to update one-hot columns)
+    
+    # Extract the 'country' field and remove it from features
     country_input = features.pop("country", None)
     
-    # For each country column, set its value to 0
+    # Set all one-hot country columns to 0
     for col in COUNTRY_COLUMNS:
         features[col] = 0
     
-    # If a country was provided, update the corresponding column
+    # If a country is provided, update its column to 1 (if it exists)
     if country_input:
         country_col = f"country_{country_input}"
         if country_col in COUNTRY_COLUMNS:
             features[country_col] = 1
         else:
-            # You could handle unknown country inputs here
-            print(f"Warning: {country_input} is not recognized. No country flag set.")
+            print(f"Warning: {country_input} is not recognized among the country columns.")
     
     # Convert the features dictionary into a DataFrame (one row)
     input_df = pd.DataFrame([features])
@@ -110,16 +107,14 @@ def process_input(data):
 
 @app.route('/')
 def home():
-    return "Fraud Detection Model API is Running!"
+    # Serve the frontend (index.html) from the current directory
+    return send_from_directory(os.path.join(os.path.dirname(__file__)), 'index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Parse the incoming JSON data
         data = request.get_json(force=True)
-        # Process the input to update one-hot country columns
         input_df = process_input(data)
-        # Get the model prediction (0: Not Fraud, 1: Fraud)
         prediction = model.predict(input_df)
         result = int(prediction[0])
         return jsonify({'prediction': result})
@@ -127,5 +122,4 @@ def predict():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    # Run the app on all network interfaces (useful for Docker) on port 5000
     app.run(host='0.0.0.0', port=5000, debug=True)
