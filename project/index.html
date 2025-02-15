@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fraud Detection Prediction</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 600px; margin: auto; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input[type="text"], input[type="number"] {
+      width: 100%; padding: 8px; box-sizing: border-box;
+    }
+    button { padding: 10px 20px; font-size: 16px; }
+    .result { margin-top: 30px; font-size: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fraud Detection Prediction</h1>
+    <p>Enter the transaction details below. All numeric fields should be entered as numbers. For country, enter the country name exactly as used in training (e.g., "United States").</p>
+    <form id="prediction-form">
+      <div class="form-group">
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" name="user_id" placeholder="e.g., 22058">
+      </div>
+      <div class="form-group">
+        <label for="signup_time">Signup Time (timestamp):</label>
+        <input type="number" id="signup_time" name="signup_time" placeholder="e.g., 1424818549">
+      </div>
+      <div class="form-group">
+        <label for="purchase_time">Purchase Time (timestamp):</label>
+        <input type="number" id="purchase_time" name="purchase_time" placeholder="e.g., 1429325231">
+      </div>
+      <div class="form-group">
+        <label for="purchase_value">Purchase Value ($):</label>
+        <input type="number" step="any" id="purchase_value" name="purchase_value" placeholder="e.g., 0.1724">
+      </div>
+      <div class="form-group">
+        <label for="device_id">Device ID:</label>
+        <input type="text" id="device_id" name="device_id" placeholder="e.g., 26198186">
+      </div>
+      <div class="form-group">
+        <label for="source">Source (numeric code):</label>
+        <input type="number" id="source" name="source" placeholder="e.g., 2">
+      </div>
+      <div class="form-group">
+        <label for="browser">Browser (e.g., Chrome, Safari):</label>
+        <input type="text" id="browser" name="browser" placeholder="e.g., Chrome">
+      </div>
+      <div class="form-group">
+        <label for="sex">Sex (1 for Male, 0 for Female):</label>
+        <input type="number" id="sex" name="sex" placeholder="e.g., 1">
+      </div>
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" step="any" id="age" name="age" placeholder="e.g., 30">
+      </div>
+      <div class="form-group">
+        <label for="ip_address">IP Address (numeric value):</label>
+        <input type="text" id="ip_address" name="ip_address" placeholder="e.g., 732758368">
+      </div>
+      <div class="form-group">
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" placeholder="e.g., United States">
+      </div>
+      <button type="button" onclick="submitPrediction()">Predict</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function submitPrediction() {
+      // Collect form data into a JSON object.
+      let data = {
+        user_id: document.getElementById("user_id").value,
+        signup_time: parseFloat(document.getElementById("signup_time").value),
+        purchase_time: parseFloat(document.getElementById("purchase_time").value),
+        purchase_value: parseFloat(document.getElementById("purchase_value").value),
+        device_id: document.getElementById("device_id").value,
+        source: parseFloat(document.getElementById("source").value),
+        browser: document.getElementById("browser").value,
+        sex: parseFloat(document.getElementById("sex").value),
+        age: parseFloat(document.getElementById("age").value),
+        ip_address: document.getElementById("ip_address").value,
+        country: document.getElementById("country").value.trim()
+      };
+
+      fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(json => {
+        if (json.prediction !== undefined) {
+          let resultText = json.prediction === 1 ? "Fraud" : "Not Fraud";
+          document.getElementById("result").innerText = "Prediction: " + resultText;
+        } else {
+          document.getElementById("result").innerText = "Error: " + json.error;
+        }
+      })
+      .catch(error => {
+        document.getElementById("result").innerText = "Error: " + error;
+      });
+    }
+  </script>
+</body>
+</html>
