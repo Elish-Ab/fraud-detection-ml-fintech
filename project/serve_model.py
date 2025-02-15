@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Load the trained model (Ensure your model is in the same directory or provide the correct path)
-MODEL_PATH = 'fraud_detection_model.pkl'  # Update this path if necessary
+MODEL_PATH = './model.pkl'  # Update this path if necessary
 model = joblib.load(MODEL_PATH)
 scaler = StandardScaler()
 
