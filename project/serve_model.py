@@ -8,7 +8,7 @@ import numpy as np
 from datetime import datetime
 from pydantic import BaseModel
 from typing import List, Union
-
+import os
 app = FastAPI()
 
 # Configure CORS
@@ -21,9 +21,15 @@ app.add_middleware(
 
 # Load pre-trained model
 try:
-    model = joblib.load("./model.pkl")
+    if os.path.exists('/app/project/model.pkl'):  # Docker container path
+        model_path = '/app/project/model.pkl'
+    else:  # Local path
+        model_path = './model.pkl'
+
+    model = joblib.load(model_path)
 except Exception as e:
     raise RuntimeError(f"Error loading model: {str(e)}")
+
 
 # Country list from your dataset columns
 # List of one-hot encoded country columns used during training.
