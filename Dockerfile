@@ -1,17 +1,18 @@
-# Use the official Python image from the Docker Hub
+# Use the official Python image from Docker Hub
 FROM python:3.10-slim
-# Set the working directory in the container to /app
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Install the dependencies specified in the requirements file
+# Copy and install dependencies
 COPY requirements.txt .
-
-# Copy the rest of the application code into the container
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire application
 COPY . .
 
-# Expose port 5000 to allow external access
-EXPOSE 5000
+# Expose ports for both FastAPI (8000) and Dash (8050)
+EXPOSE 8000 8050
 
-# Specify the command to run the application
-CMD ["python", "project/serve_model.py"]
+# Run both FastAPI and Dash in the same container
+CMD uvicorn project.serve_model:app --host 0.0.0.0 --port 8000 & python project/dashboard.py
