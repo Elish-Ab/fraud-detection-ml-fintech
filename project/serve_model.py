@@ -4,11 +4,11 @@ from fastapi.responses import JSONResponse
 import pandas as pd
 import joblib
 import io
-import numpy as np
+import os
 from datetime import datetime
 from pydantic import BaseModel
-from typing import List, Union
-import os
+from typing import List
+
 app = FastAPI()
 
 # Configure CORS
@@ -20,18 +20,17 @@ app.add_middleware(
 )
 
 # Load pre-trained model
-try:
-    if os.path.exists('/app/project/model.pkl'):  # Docker container path
-        model_path = '/app/project/model.pkl'
-    else:  # Local path
-        model_path = './model.pkl'
+def load_model():
+    global model
+    try:
+        model_path = "/app/project/model.pkl" if os.path.exists('/app/project/model.pkl') else "./model.pkl"
+        model = joblib.load(model_path)
+    except Exception as e:
+        raise RuntimeError(f"Error loading model: {str(e)}")
 
-    model = joblib.load(model_path)
-except Exception as e:
-    raise RuntimeError(f"Error loading model: {str(e)}")
+# Load model at startup
+load_model()
 
-
-# Country list from your dataset columns
 # List of one-hot encoded country columns used during training.
 COUNTRIES = [
             "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas",
@@ -55,75 +54,45 @@ COUNTRIES = [
             "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
             "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"
 ]
+BROWSERS = ['Chrome', 'FireFox', 'IE', 'Opera', 'Safari']
+SOURCES = ['Ads', 'Direct', 'Organic']
+
+REQUIRED_COLUMNS = {"user_id", "sex", "signup_time", "purchase_time", "purchase_value", 
+                    "device_id", "source", "browser", "age", "ip_address", "country"}
 
 class PredictionResponse(BaseModel):
     predictions: List[float]
     fraud_probabilities: List[float]
     status: str
 
-def preprocess_data(data: pd.DataFrame) -> pd.DataFrame:
-    """Preprocess input data for model consumption"""
-    data = data.copy()
-    
-    # Convert datetime fields
-    data['signup_time'] = pd.to_datetime(data['signup_time'], unit='s')
-    data['purchase_time'] = pd.to_datetime(data['purchase_time'], unit='s')
-    
-    # Extract temporal features
-    data['signup_hour'] = data['signup_time'].dt.hour
-    data['purchase_hour'] = data['purchase_time'].dt.hour
-    data['time_diff_signup_purchase'] = (data['purchase_time'] - data['signup_time']).dt.total_seconds()
-    
-    # One-hot encode country
-    for country in COUNTRIES:
-        data[f'country_{country}'] = 0
-    data[f'country_{data["country"].iloc[0]}'] = 1
-    
-    # Encode other categorical variables
-    categorical_mappings = {
-        'sex': {'male': 1, 'female': 0},
-        'source': {'Ads': 0, 'Direct': 1, 'Organic': 2},
-        'browser': {'Chrome': 0, 'FireFox': 1, 'IE': 2, 'Opera': 3, 'Safari': 4}
-    }
-    
-    for col, mapping in categorical_mappings.items():
-        data[col] = data[col].map(mapping)
-    
-    # Select final features based on your model's requirements
-    required_features = [
-        'purchase_value', 'age', 'signup_hour', 'purchase_hour',
-        'time_diff_signup_purchase', 'sex', 'source', 'browser'
-    ] + [f'country_{c}' for c in COUNTRIES]
-    
-    return data[required_features]
-
 @app.post("/predict/upload", response_model=PredictionResponse)
 async def predict_from_file(file: UploadFile = File(...)):
     try:
-        # Read and parse uploaded file
         contents = await file.read()
-        if file.filename.endswith('.csv'):
-            data = pd.read_csv(io.BytesIO(contents))
-        elif file.filename.endswith('.json'):
-            data = pd.read_json(io.BytesIO(contents))
-        else:
-            raise HTTPException(400, "Unsupported file format")
+        file_extension = os.path.splitext(file.filename)[-1].lower()
+        if file_extension not in {".csv", ".json"}:
+            raise HTTPException(400, detail="Only CSV and JSON files are supported")
         
-        # Preprocess data
+        data = pd.read_csv(io.BytesIO(contents)) if file_extension == '.csv' else pd.read_json(io.BytesIO(contents))
+        
+        missing_columns = REQUIRED_COLUMNS - set(data.columns)
+        if missing_columns:
+            raise HTTPException(status_code=400, detail=f"Missing columns: {missing_columns}")
+        
         processed_data = preprocess_data(data)
-        
-        # Make predictions
         predictions = model.predict(processed_data)
         probabilities = model.predict_proba(processed_data)[:, 1]
         
-        return {
-            "predictions": predictions.tolist(),
-            "fraud_probabilities": probabilities.tolist(),
-            "status": "success"
-        }
+        return PredictionResponse(
+            predictions=predictions.tolist(),
+            fraud_probabilities=probabilities.tolist(),
+            status="success"
+        )
         
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content={"status": "error", "detail": e.detail})
     except Exception as e:
-        raise HTTPException(500, f"Processing error: {str(e)}")
+        return JSONResponse(status_code=500, content={"status": "error", "detail": "Internal Server Error", "message": str(e)})
 
 @app.post("/predict/form", response_model=PredictionResponse)
 async def predict_from_form(
@@ -140,36 +109,21 @@ async def predict_from_form(
     country: str = Form(...)
 ):
     try:
-        # Create DataFrame from form data
-        form_data = {
-            'user_id': [user_id],
-            'sex': [sex],
-            'signup_time': [signup_time],
-            'purchase_time': [purchase_time],
-            'purchase_value': [purchase_value],
-            'device_id': [device_id],
-            'source': [source],
-            'browser': [browser],
-            'age': [age],
-            'ip_address': [ip_address],
-            'country': [country]
-        }
-        
-        data = pd.DataFrame(form_data)
+        data = pd.DataFrame([{ "user_id": user_id, "sex": sex, "signup_time": signup_time, "purchase_time": purchase_time, "purchase_value": purchase_value, "device_id": device_id, "source": source, "browser": browser, "age": age, "ip_address": ip_address, "country": country }])
         processed_data = preprocess_data(data)
-        
-        # Make predictions
         prediction = model.predict(processed_data)[0]
         probability = model.predict_proba(processed_data)[0][1]
         
-        return {
-            "predictions": [float(prediction)],
-            "fraud_probabilities": [float(probability)],
-            "status": "success"
-        }
+        return PredictionResponse(
+            predictions=[float(prediction)],
+            fraud_probabilities=[float(probability)],
+            status="success"
+        )
         
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content={"status": "error", "detail": e.detail})
     except Exception as e:
-        raise HTTPException(500, f"Form processing error: {str(e)}")
+        return JSONResponse(status_code=500, content={"status": "error", "detail": "Internal Server Error", "message": str(e)})
 
 if __name__ == "__main__":
     import uvicorn
