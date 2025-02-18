@@ -102,3 +102,4 @@ zipp==3.21.0
 fastapi
 python-multipart
 uvicorn
+dash

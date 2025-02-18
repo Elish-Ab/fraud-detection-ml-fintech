@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8000 8050
 
 # Run both FastAPI and Dash in the same container
-CMD uvicorn project.serve_model:app --host 0.0.0.0 --port 8000 & python project/dashboard.py
+CMD ["sh", "-c", "uvicorn project.serve_model:app --host 0.0.0.0 --port 8000 & python project/dashboard.py"]
