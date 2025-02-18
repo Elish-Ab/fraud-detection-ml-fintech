@@ -1,0 +1,103 @@
+2025-02-17 21:27:04,043 - INFO - Model loaded successfully.
+2025-02-17 21:28:29,454 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:28:29,455 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:43:06,874 - INFO - Model loaded successfully.
+2025-02-17 21:44:44,767 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:44,772 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:50,837 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:50,839 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:51,167 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:51,168 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:54,440 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:54,442 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:56,442 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:56,445 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:57,430 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:57,433 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:44:58,334 - INFO - Data preprocessing completed successfully.
+2025-02-17 21:44:58,337 - ERROR - Internal server error: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- time_diff
+Feature names seen at fit time, yet now missing:
+- browser_FireFox
+- browser_IE
+- browser_Opera
+- browser_Safari
+- country_Albania
+- ...
+
+2025-02-17 21:51:54,579 - INFO - Model loaded successfully.
+2025-02-17 23:08:36,325 - ERROR - Error in data preprocessing: '[\'signup_year\', \'signup_month\', \'signup_day\', \'signup_hour\', \'purchase_year\', \'purchase_month\', \'purchase_day\', \'purchase_hour\', \'transaction_hour\', \'transaction_day_of_week\', \'time_diff_signup_purchase\', \'is_night_transaction\', \'fraud_rate_by_browser\', \'fraud_rate_by_source\', \'browser_FireFox\', \'browser_IE\', \'browser_Opera\', \'browser_Safari\', \'country_Antigua and Barbuda\', \'country_Armenia\', \'country_Azerbaijan\', \'country_Bahamas\', \'country_Bahrain\', \'country_Barbados\', \'country_Belarus\', \'country_Belize\', \'country_Benin\', \'country_Bermuda\', \'country_Bhutan\', \'country_Bolivia\', \'country_Bonaire; Sint Eustatius; Saba\', \'country_Bosnia and Herzegowina\', \'country_Botswana\', \'country_British Indian Ocean Territory\', \'country_Brunei Darussalam\', \'country_Bulgaria\', \'country_Burkina Faso\', \'country_Burundi\', \'country_Cambodia\', \'country_Cameroon\', \'country_Cape Verde\', \'country_Cayman Islands\', \'country_Chile\', \'country_Colombia\', \'country_Congo\', \'country_Congo The Democratic Republic of The\', \'country_Costa Rica\', "country_Cote D\'ivoire", \'country_Croatia (LOCAL Name: Hrvatska)\', \'country_Cuba\', \'country_Curacao\', \'country_Cyprus\', \'country_Czech Republic\', \'country_Djibouti\', \'country_Dominica\', \'country_Dominican Republic\', \'country_Ecuador\', \'country_El Salvador\', \'country_Estonia\', \'country_Ethiopia\', \'country_European Union\', \'country_Faroe Islands\', \'country_Fiji\', \'country_Gabon\', \'country_Gambia\', \'country_Georgia\', \'country_Ghana\', \'country_Gibraltar\', \'country_Guadeloupe\', \'country_Guam\', \'country_Guatemala\', \'country_Haiti\', \'country_Honduras\', \'country_Hong Kong\', \'country_Iceland\', \'country_Iran (ISLAMIC Republic Of)\', \'country_Jamaica\', \'country_Jordan\', \'country_Kazakhstan\', \'country_Korea Republic of\', \'country_Kuwait\', \'country_Kyrgyzstan\', "country_Lao People\'s Democratic Republic", \'country_Latvia\', \'country_Lebanon\', \'country_Lesotho\', \'country_Libyan Arab Jamahiriya\', \'country_Liechtenstein\', \'country_Lithuania\', \'country_Luxembourg\', \'country_Macau\', \'country_Macedonia\', \'country_Madagascar\', \'country_Malawi\', \'country_Maldives\', \'country_Malta\', \'country_Mauritius\', \'country_Moldova Republic of\', \'country_Monaco\', \'country_Mongolia\', \'country_Montenegro\', \'country_Morocco\', \'country_Mozambique\', \'country_Myanmar\', \'country_Namibia\', \'country_Nauru\', \'country_Nepal\', \'country_New Caledonia\', \'country_Nicaragua\', \'country_Niger\', \'country_Oman\', \'country_Palestinian Territory Occupied\', \'country_Panama\', \'country_Papua New Guinea\', \'country_Paraguay\', \'country_Puerto Rico\', \'country_Reunion\', \'country_Russian Federation\', \'country_Rwanda\', \'country_Saint Kitts and Nevis\', \'country_Saint Martin\', \'country_San Marino\', \'country_Senegal\', \'country_Serbia\', \'country_Seychelles\', \'country_Singapore\', \'country_Slovakia (SLOVAK Republic)\', \'country_Slovenia\', \'country_South Sudan\', \'country_Sri Lanka\', \'country_Sudan\', \'country_Syrian Arab Republic\', \'country_Taiwan; Republic of China (ROC)\', \'country_Tajikistan\', \'country_Tanzania United Republic of\', \'country_Trinidad and Tobago\', \'country_Tunisia\', \'country_Turkmenistan\', \'country_Uganda\', \'country_Unknown\', \'country_Uruguay\', \'country_Uzbekistan\', \'country_Vanuatu\', \'country_Venezuela\', \'country_Viet Nam\', \'country_Virgin Islands (U.S.)\', \'country_Yemen\', \'country_Zambia\'] not in index'
+2025-02-17 23:08:36,329 - ERROR - Client error: Preprocessing error: '[\'signup_year\', \'signup_month\', \'signup_day\', \'signup_hour\', \'purchase_year\', \'purchase_month\', \'purchase_day\', \'purchase_hour\', \'transaction_hour\', \'transaction_day_of_week\', \'time_diff_signup_purchase\', \'is_night_transaction\', \'fraud_rate_by_browser\', \'fraud_rate_by_source\', \'browser_FireFox\', \'browser_IE\', \'browser_Opera\', \'browser_Safari\', \'country_Antigua and Barbuda\', \'country_Armenia\', \'country_Azerbaijan\', \'country_Bahamas\', \'country_Bahrain\', \'country_Barbados\', \'country_Belarus\', \'country_Belize\', \'country_Benin\', \'country_Bermuda\', \'country_Bhutan\', \'country_Bolivia\', \'country_Bonaire; Sint Eustatius; Saba\', \'country_Bosnia and Herzegowina\', \'country_Botswana\', \'country_British Indian Ocean Territory\', \'country_Brunei Darussalam\', \'country_Bulgaria\', \'country_Burkina Faso\', \'country_Burundi\', \'country_Cambodia\', \'country_Cameroon\', \'country_Cape Verde\', \'country_Cayman Islands\', \'country_Chile\', \'country_Colombia\', \'country_Congo\', \'country_Congo The Democratic Republic of The\', \'country_Costa Rica\', "country_Cote D\'ivoire", \'country_Croatia (LOCAL Name: Hrvatska)\', \'country_Cuba\', \'country_Curacao\', \'country_Cyprus\', \'country_Czech Republic\', \'country_Djibouti\', \'country_Dominica\', \'country_Dominican Republic\', \'country_Ecuador\', \'country_El Salvador\', \'country_Estonia\', \'country_Ethiopia\', \'country_European Union\', \'country_Faroe Islands\', \'country_Fiji\', \'country_Gabon\', \'country_Gambia\', \'country_Georgia\', \'country_Ghana\', \'country_Gibraltar\', \'country_Guadeloupe\', \'country_Guam\', \'country_Guatemala\', \'country_Haiti\', \'country_Honduras\', \'country_Hong Kong\', \'country_Iceland\', \'country_Iran (ISLAMIC Republic Of)\', \'country_Jamaica\', \'country_Jordan\', \'country_Kazakhstan\', \'country_Korea Republic of\', \'country_Kuwait\', \'country_Kyrgyzstan\', "country_Lao People\'s Democratic Republic", \'country_Latvia\', \'country_Lebanon\', \'country_Lesotho\', \'country_Libyan Arab Jamahiriya\', \'country_Liechtenstein\', \'country_Lithuania\', \'country_Luxembourg\', \'country_Macau\', \'country_Macedonia\', \'country_Madagascar\', \'country_Malawi\', \'country_Maldives\', \'country_Malta\', \'country_Mauritius\', \'country_Moldova Republic of\', \'country_Monaco\', \'country_Mongolia\', \'country_Montenegro\', \'country_Morocco\', \'country_Mozambique\', \'country_Myanmar\', \'country_Namibia\', \'country_Nauru\', \'country_Nepal\', \'country_New Caledonia\', \'country_Nicaragua\', \'country_Niger\', \'country_Oman\', \'country_Palestinian Territory Occupied\', \'country_Panama\', \'country_Papua New Guinea\', \'country_Paraguay\', \'country_Puerto Rico\', \'country_Reunion\', \'country_Russian Federation\', \'country_Rwanda\', \'country_Saint Kitts and Nevis\', \'country_Saint Martin\', \'country_San Marino\', \'country_Senegal\', \'country_Serbia\', \'country_Seychelles\', \'country_Singapore\', \'country_Slovakia (SLOVAK Republic)\', \'country_Slovenia\', \'country_South Sudan\', \'country_Sri Lanka\', \'country_Sudan\', \'country_Syrian Arab Republic\', \'country_Taiwan; Republic of China (ROC)\', \'country_Tajikistan\', \'country_Tanzania United Republic of\', \'country_Trinidad and Tobago\', \'country_Tunisia\', \'country_Turkmenistan\', \'country_Uganda\', \'country_Unknown\', \'country_Uruguay\', \'country_Uzbekistan\', \'country_Vanuatu\', \'country_Venezuela\', \'country_Viet Nam\', \'country_Virgin Islands (U.S.)\', \'country_Yemen\', \'country_Zambia\'] not in index'
+2025-02-17 23:12:27,091 - ERROR - Error in data preprocessing: '[\'signup_year\', \'signup_month\', \'signup_day\', \'signup_hour\', \'purchase_year\', \'purchase_month\', \'purchase_day\', \'purchase_hour\', \'transaction_hour\', \'transaction_day_of_week\', \'time_diff_signup_purchase\', \'is_night_transaction\', \'fraud_rate_by_browser\', \'fraud_rate_by_source\', \'browser_FireFox\', \'browser_IE\', \'browser_Opera\', \'browser_Safari\', \'country_Antigua and Barbuda\', \'country_Armenia\', \'country_Azerbaijan\', \'country_Bahamas\', \'country_Bahrain\', \'country_Barbados\', \'country_Belarus\', \'country_Belize\', \'country_Benin\', \'country_Bermuda\', \'country_Bhutan\', \'country_Bolivia\', \'country_Bonaire; Sint Eustatius; Saba\', \'country_Bosnia and Herzegowina\', \'country_Botswana\', \'country_British Indian Ocean Territory\', \'country_Brunei Darussalam\', \'country_Bulgaria\', \'country_Burkina Faso\', \'country_Burundi\', \'country_Cambodia\', \'country_Cameroon\', \'country_Cape Verde\', \'country_Cayman Islands\', \'country_Chile\', \'country_Colombia\', \'country_Congo\', \'country_Congo The Democratic Republic of The\', \'country_Costa Rica\', "country_Cote D\'ivoire", \'country_Croatia (LOCAL Name: Hrvatska)\', \'country_Cuba\', \'country_Curacao\', \'country_Cyprus\', \'country_Czech Republic\', \'country_Djibouti\', \'country_Dominica\', \'country_Dominican Republic\', \'country_Ecuador\', \'country_El Salvador\', \'country_Estonia\', \'country_Ethiopia\', \'country_European Union\', \'country_Faroe Islands\', \'country_Fiji\', \'country_Gabon\', \'country_Gambia\', \'country_Georgia\', \'country_Ghana\', \'country_Gibraltar\', \'country_Guadeloupe\', \'country_Guam\', \'country_Guatemala\', \'country_Haiti\', \'country_Honduras\', \'country_Hong Kong\', \'country_Iceland\', \'country_Iran (ISLAMIC Republic Of)\', \'country_Jamaica\', \'country_Jordan\', \'country_Kazakhstan\', \'country_Korea Republic of\', \'country_Kuwait\', \'country_Kyrgyzstan\', "country_Lao People\'s Democratic Republic", \'country_Latvia\', \'country_Lebanon\', \'country_Lesotho\', \'country_Libyan Arab Jamahiriya\', \'country_Liechtenstein\', \'country_Lithuania\', \'country_Luxembourg\', \'country_Macau\', \'country_Macedonia\', \'country_Madagascar\', \'country_Malawi\', \'country_Maldives\', \'country_Malta\', \'country_Mauritius\', \'country_Moldova Republic of\', \'country_Monaco\', \'country_Mongolia\', \'country_Montenegro\', \'country_Morocco\', \'country_Mozambique\', \'country_Myanmar\', \'country_Namibia\', \'country_Nauru\', \'country_Nepal\', \'country_New Caledonia\', \'country_Nicaragua\', \'country_Niger\', \'country_Oman\', \'country_Palestinian Territory Occupied\', \'country_Panama\', \'country_Papua New Guinea\', \'country_Paraguay\', \'country_Puerto Rico\', \'country_Reunion\', \'country_Russian Federation\', \'country_Rwanda\', \'country_Saint Kitts and Nevis\', \'country_Saint Martin\', \'country_San Marino\', \'country_Senegal\', \'country_Serbia\', \'country_Seychelles\', \'country_Singapore\', \'country_Slovakia (SLOVAK Republic)\', \'country_Slovenia\', \'country_South Sudan\', \'country_Sri Lanka\', \'country_Sudan\', \'country_Syrian Arab Republic\', \'country_Taiwan; Republic of China (ROC)\', \'country_Tajikistan\', \'country_Tanzania United Republic of\', \'country_Trinidad and Tobago\', \'country_Tunisia\', \'country_Turkmenistan\', \'country_Uganda\', \'country_Unknown\', \'country_Uruguay\', \'country_Uzbekistan\', \'country_Vanuatu\', \'country_Venezuela\', \'country_Viet Nam\', \'country_Virgin Islands (U.S.)\', \'country_Yemen\', \'country_Zambia\'] not in index'
+2025-02-17 23:12:27,092 - ERROR - Client error: Preprocessing error: '[\'signup_year\', \'signup_month\', \'signup_day\', \'signup_hour\', \'purchase_year\', \'purchase_month\', \'purchase_day\', \'purchase_hour\', \'transaction_hour\', \'transaction_day_of_week\', \'time_diff_signup_purchase\', \'is_night_transaction\', \'fraud_rate_by_browser\', \'fraud_rate_by_source\', \'browser_FireFox\', \'browser_IE\', \'browser_Opera\', \'browser_Safari\', \'country_Antigua and Barbuda\', \'country_Armenia\', \'country_Azerbaijan\', \'country_Bahamas\', \'country_Bahrain\', \'country_Barbados\', \'country_Belarus\', \'country_Belize\', \'country_Benin\', \'country_Bermuda\', \'country_Bhutan\', \'country_Bolivia\', \'country_Bonaire; Sint Eustatius; Saba\', \'country_Bosnia and Herzegowina\', \'country_Botswana\', \'country_British Indian Ocean Territory\', \'country_Brunei Darussalam\', \'country_Bulgaria\', \'country_Burkina Faso\', \'country_Burundi\', \'country_Cambodia\', \'country_Cameroon\', \'country_Cape Verde\', \'country_Cayman Islands\', \'country_Chile\', \'country_Colombia\', \'country_Congo\', \'country_Congo The Democratic Republic of The\', \'country_Costa Rica\', "country_Cote D\'ivoire", \'country_Croatia (LOCAL Name: Hrvatska)\', \'country_Cuba\', \'country_Curacao\', \'country_Cyprus\', \'country_Czech Republic\', \'country_Djibouti\', \'country_Dominica\', \'country_Dominican Republic\', \'country_Ecuador\', \'country_El Salvador\', \'country_Estonia\', \'country_Ethiopia\', \'country_European Union\', \'country_Faroe Islands\', \'country_Fiji\', \'country_Gabon\', \'country_Gambia\', \'country_Georgia\', \'country_Ghana\', \'country_Gibraltar\', \'country_Guadeloupe\', \'country_Guam\', \'country_Guatemala\', \'country_Haiti\', \'country_Honduras\', \'country_Hong Kong\', \'country_Iceland\', \'country_Iran (ISLAMIC Republic Of)\', \'country_Jamaica\', \'country_Jordan\', \'country_Kazakhstan\', \'country_Korea Republic of\', \'country_Kuwait\', \'country_Kyrgyzstan\', "country_Lao People\'s Democratic Republic", \'country_Latvia\', \'country_Lebanon\', \'country_Lesotho\', \'country_Libyan Arab Jamahiriya\', \'country_Liechtenstein\', \'country_Lithuania\', \'country_Luxembourg\', \'country_Macau\', \'country_Macedonia\', \'country_Madagascar\', \'country_Malawi\', \'country_Maldives\', \'country_Malta\', \'country_Mauritius\', \'country_Moldova Republic of\', \'country_Monaco\', \'country_Mongolia\', \'country_Montenegro\', \'country_Morocco\', \'country_Mozambique\', \'country_Myanmar\', \'country_Namibia\', \'country_Nauru\', \'country_Nepal\', \'country_New Caledonia\', \'country_Nicaragua\', \'country_Niger\', \'country_Oman\', \'country_Palestinian Territory Occupied\', \'country_Panama\', \'country_Papua New Guinea\', \'country_Paraguay\', \'country_Puerto Rico\', \'country_Reunion\', \'country_Russian Federation\', \'country_Rwanda\', \'country_Saint Kitts and Nevis\', \'country_Saint Martin\', \'country_San Marino\', \'country_Senegal\', \'country_Serbia\', \'country_Seychelles\', \'country_Singapore\', \'country_Slovakia (SLOVAK Republic)\', \'country_Slovenia\', \'country_South Sudan\', \'country_Sri Lanka\', \'country_Sudan\', \'country_Syrian Arab Republic\', \'country_Taiwan; Republic of China (ROC)\', \'country_Tajikistan\', \'country_Tanzania United Republic of\', \'country_Trinidad and Tobago\', \'country_Tunisia\', \'country_Turkmenistan\', \'country_Uganda\', \'country_Unknown\', \'country_Uruguay\', \'country_Uzbekistan\', \'country_Vanuatu\', \'country_Venezuela\', \'country_Viet Nam\', \'country_Virgin Islands (U.S.)\', \'country_Yemen\', \'country_Zambia\'] not in index'
