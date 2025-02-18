@@ -103,3 +103,4 @@ fastapi
 python-multipart
 uvicorn
 dash
+dash-bootstrap-components
