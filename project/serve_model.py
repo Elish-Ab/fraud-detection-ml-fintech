@@ -44,7 +44,31 @@ load_model()
 
 # One-hot encoded country list and other constants
 # List of one-hot encoded country columns used during training.
-COUNTRIES = ["Albania", "Algeria", "Angola", "Argentina", "Australia", "Austria", "Bangladesh", "Belgium", "Brazil", "Canada", "China", "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hungary", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan", "Kenya", "Malaysia", "Mexico", "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Saudi Arabia", "South Africa", "South Korea", "Spain", "Sweden", "Switzerland", "Thailand", "Turkey", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Vietnam", "Zimbabwe"]
+COUNTRIES = [
+    "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+    "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", 
+    "Bolivia", "Bonaire, Sint Eustatius, Saba", "Bosnia and Herzegowina", "Botswana", "Brazil", "British Indian Ocean Territory",
+    "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", 
+    "Cayman Islands", "Chile", "China", "Colombia", "Congo", "Congo, The Democratic Republic of The", "Costa Rica", 
+    "Cote D'Ivoire", "Croatia (LOCAL Name: Hrvatska)", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", 
+    "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Estonia", "Ethiopia", "European Union", 
+    "Faroe Islands", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", 
+    "Guadeloupe", "Guam", "Guatemala", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", 
+    "Iran (ISLAMIC Republic Of)", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", 
+    "Korea, Republic of", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", 
+    "Libyan Arab Jamahiriya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", 
+    "Malaysia", "Maldives", "Malta", "Mauritius", "Mexico", "Moldova, Republic of", "Monaco", "Mongolia", "Montenegro", 
+    "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", 
+    "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palestinian Territory Occupied", "Panama", 
+    "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", 
+    "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Martin", "San Marino", "Saudi Arabia", 
+    "Senegal", "Serbia", "Seychelles", "Singapore", "Slovakia (SLOVAK Republic)", "Slovenia", "South Africa", "South Sudan", 
+    "Spain", "Sri Lanka", "Sudan", "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan, Republic of China (ROC)", 
+    "Tajikistan", "Tanzania, United Republic of", "Thailand", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", 
+    "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Unknown", "Uruguay", "Uzbekistan", 
+    "Vanuatu", "Venezuela", "Viet Nam", "Virgin Islands (U.S.)", "Yemen", "Zambia", "Zimbabwe"
+]
+
 BROWSERS = ['Chrome', 'FireFox', 'IE', 'Opera', 'Safari']
 SOURCES = ['Ads', 'Direct', 'Organic']
 
@@ -87,6 +111,15 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         logging.info("Data preprocessing completed successfully.")
         return df
     except Exception as e:
+        missing_columns = REQUIRED_COLUMNS - set(df.columns)
+        if missing_columns:
+            raise HTTPException(400, detail=f"Missing columns: {missing_columns}")
+
+        logging.info(f"Columns in uploaded file: {df.columns.tolist()}")
+        extra_columns = set(df.columns) - REQUIRED_COLUMNS
+        if extra_columns:
+            logging.info(f"Extra columns in the file: {extra_columns}")
+
         logging.error(f"Error in data preprocessing: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Preprocessing error: {str(e)}")
 
@@ -125,7 +158,7 @@ async def predict_from_file(file: UploadFile = File(...)):
         logging.error(f"Internal server error: {str(e)}")
         return JSONResponse(status_code=500, content={"status": "error", "detail": "Internal Server Error", "message": str(e)})
 
-# Form-based prediction
+# API endpoint for prediction
 @app.post("/predict/form", response_model=PredictionResponse)
 async def predict_from_form(
     user_id: str = Form(...),
@@ -141,14 +174,35 @@ async def predict_from_form(
     country: str = Form(...)
 ):
     try:
-        data = pd.DataFrame([{ "user_id": user_id, "sex": sex, "signup_time": signup_time, "purchase_time": purchase_time, "purchase_value": purchase_value, "device_id": device_id, "source": source, "browser": browser, "age": age, "ip_address": ip_address, "country": country }])
+        # Log the incoming form data for debugging
+        logging.info(f"Received form data: user_id={user_id}, sex={sex}, signup_time={signup_time}, "
+                      f"purchase_time={purchase_time}, purchase_value={purchase_value}, device_id={device_id}, "
+                      f"source={source}, browser={browser}, age={age}, ip_address={ip_address}, country={country}")
+        
+        data = pd.DataFrame([{
+            "user_id": user_id,
+            "sex": sex,
+            "signup_time": signup_time,
+            "purchase_time": purchase_time,
+            "purchase_value": purchase_value,
+            "device_id": device_id,
+            "source": source,
+            "browser": browser,
+            "age": age,
+            "ip_address": ip_address,
+            "country": country
+        }])
+
+        # Preprocess the data
         processed_data = preprocess_data(data)
+
+        # Make prediction
         prediction = model.predict(processed_data)[0]
         probability = model.predict_proba(processed_data)[0][1]
         
         logging.info("Form prediction completed successfully.")
         return PredictionResponse(predictions=[float(prediction)], fraud_probabilities=[float(probability)], status="success")
-    
+
     except HTTPException as e:
         logging.error(f"Client error: {e.detail}")
         return JSONResponse(status_code=e.status_code, content={"status": "error", "detail": e.detail})
