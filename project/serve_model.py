@@ -1,6 +1,8 @@
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import pandas as pd
 import joblib
 import io
@@ -22,6 +24,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Mount the static directory so that assets can be accessed via /static/<filename>
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve the HTML file at the root URL
+@app.get("/", response_class=FileResponse)
+async def read_index():
+    return FileResponse("static/index.html")
 
 
 # Set up logging
