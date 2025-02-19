@@ -31,7 +31,7 @@ def correct_data_types(df):
     df['purchase_month'] = df['purchase_time'].dt.month
     df['purchase_day'] = df['purchase_time'].dt.day
     df['purchase_hour'] = df['purchase_time'].dt.hour
-
+    print(df['signup_year'].head())
     return df
 
 

@@ -1,17 +1,24 @@
-# Use the official Python image from the Docker Hub
+# Use the official Python image from Docker Hub
 FROM python:3.10-slim
-# Set the working directory in the container to /app
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Install the dependencies specified in the requirements file
-COPY requirements.txt .
+# Install supervisor
+RUN apt-get update && apt-get install -y supervisor
 
-# Copy the rest of the application code into the container
+# Copy and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire application
 COPY . .
 
-# Expose port 5000 to allow external access
-EXPOSE 5000
+# Expose ports for both FastAPI (8000) and Dash (8050)
+EXPOSE 8000 8050
 
-# Specify the command to run the application
-CMD ["python", "project/serve_model.py"]
+# Copy the supervisor configuration file
+COPY supervisord.conf /etc/supervisord.conf
+
+# Run supervisord to start both FastAPI and Dash
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]

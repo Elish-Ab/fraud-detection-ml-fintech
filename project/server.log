@@ -1,0 +1,96 @@
+2025-02-19 10:54:34,042 - INFO - Model loaded successfully.
+2025-02-19 10:58:38,373 - INFO - Model loaded successfully.
+2025-02-19 11:16:35,364 - INFO - Model loaded successfully.
+2025-02-19 11:18:25,082 - INFO - Received form data: user_id=123, sex=male, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=abc123, source=website, browser=chrome, age=25, ip_address=127.0.0.1, country=USA
+2025-02-19 11:18:25,385 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:18:25,392 - ERROR - Internal server error: could not convert string to float: 'abc123'
+2025-02-19 11:21:08,735 - INFO - Received form data: user_id=123, sex=male, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=abc123, source=website, browser=chrome, age=25, ip_address=127.0.0.1, country=USA
+2025-02-19 11:21:09,060 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:21:09,067 - ERROR - Internal server error: could not convert string to float: 'abc123'
+2025-02-19 11:21:33,491 - INFO - Received form data: user_id=123, sex=male, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=32123456, source=website, browser=chrome, age=25, ip_address=127.0.0.1, country=USA
+2025-02-19 11:21:33,709 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:21:33,741 - ERROR - Internal server error: could not convert string to float: 'male'
+2025-02-19 11:22:18,394 - INFO - Received form data: user_id=123, sex=1, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=32123456, source=website, browser=chrome, age=25, ip_address=127.0.0.1, country=USA
+2025-02-19 11:22:18,715 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:22:18,721 - ERROR - Internal server error: could not convert string to float: '127.0.0.1'
+2025-02-19 11:22:47,047 - INFO - Received form data: user_id=123, sex=1, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=32123456, source=website, browser=chrome, age=25, ip_address=127233232, country=USA
+2025-02-19 11:22:47,372 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:22:47,432 - INFO - Form prediction completed successfully.
+2025-02-19 11:25:14,113 - INFO - Received form data: user_id=123, sex=1, signup_time=1616161616.0, purchase_time=1616161716.0, purchase_value=100.0, device_id=32123456, source=website, browser=chrome, age=25, ip_address=127233232, country=USA
+2025-02-19 11:25:14,415 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:25:14,476 - INFO - Form prediction completed successfully.
+2025-02-19 11:40:59,416 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Albania
+2025-02-19 11:40:59,714 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:40:59,777 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:00,454 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Albania
+2025-02-19 11:41:00,776 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:00,833 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:01,224 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Albania
+2025-02-19 11:41:01,513 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:01,565 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:01,568 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Albania
+2025-02-19 11:41:01,706 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:01,782 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:01,844 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Albania
+2025-02-19 11:41:01,973 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:02,037 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:04,562 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Belarus
+2025-02-19 11:41:04,868 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:04,922 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:04,924 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Belarus
+2025-02-19 11:41:05,076 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:05,130 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:21,531 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Bermuda
+2025-02-19 11:41:21,911 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:21,968 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:33,763 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=33, ip_address=123456789876, country=Ethiopia
+2025-02-19 11:41:34,114 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:34,179 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:40,432 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=423.0, device_id=34567865, source=Ads, browser=Chrome, age=12, ip_address=123456789876, country=Ethiopia
+2025-02-19 11:41:40,788 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:40,840 - INFO - Form prediction completed successfully.
+2025-02-19 11:41:52,144 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739954400.0, purchase_time=1739914800.0, purchase_value=1000.0, device_id=34567865, source=Ads, browser=Chrome, age=12, ip_address=123456789876, country=Ethiopia
+2025-02-19 11:41:52,510 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:41:52,567 - INFO - Form prediction completed successfully.
+2025-02-19 11:42:34,428 - INFO - Received form data: user_id=2123211, sex=0, signup_time=1739522520.0, purchase_time=1740127320.0, purchase_value=3737.0, device_id=34567625, source=Ads, browser=Chrome, age=65, ip_address=25646172276, country=Bolivia
+2025-02-19 11:42:34,678 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:42:34,735 - INFO - Form prediction completed successfully.
+2025-02-19 11:42:48,374 - INFO - Received form data: user_id=7687688, sex=0, signup_time=1739522520.0, purchase_time=1740127320.0, purchase_value=3737.0, device_id=34567625, source=Ads, browser=Chrome, age=65, ip_address=25646172276, country=Bolivia
+2025-02-19 11:42:48,744 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:42:48,800 - INFO - Form prediction completed successfully.
+2025-02-19 11:42:57,586 - INFO - Received form data: user_id=7687688, sex=0, signup_time=1739522520.0, purchase_time=1740127320.0, purchase_value=3737.0, device_id=34567625, source=Ads, browser=Chrome, age=65, ip_address=9789863392, country=Bolivia
+2025-02-19 11:42:57,890 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:42:57,956 - INFO - Form prediction completed successfully.
+2025-02-19 11:43:50,498 - INFO - Received form data: user_id=1234, sex=0, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=34567865, source=Ads, browser=Chrome, age=45, ip_address=9793685235, country=Bermuda
+2025-02-19 11:43:50,599 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:43:50,655 - INFO - Form prediction completed successfully.
+2025-02-19 11:44:16,907 - INFO - Received form data: user_id=3521, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=34567865, source=Ads, browser=Chrome, age=21, ip_address=739366527, country=Bermuda
+2025-02-19 11:44:17,298 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:44:17,356 - INFO - Form prediction completed successfully.
+2025-02-19 11:44:26,183 - INFO - Received form data: user_id=3521, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=34567865, source=Ads, browser=Chrome, age=21, ip_address=739366527, country=United States
+2025-02-19 11:44:26,568 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:44:26,624 - INFO - Form prediction completed successfully.
+2025-02-19 11:44:35,473 - INFO - Received form data: user_id=3521, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=34567865, source=Ads, browser=Chrome, age=21, ip_address=6329236323, country=United States
+2025-02-19 11:44:35,829 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:44:35,884 - INFO - Form prediction completed successfully.
+2025-02-19 11:45:53,646 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=34567865, source=SEO, browser=Chrome, age=39, ip_address=732758368.79972, country=United States
+2025-02-19 11:45:54,055 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:45:54,114 - INFO - Form prediction completed successfully.
+2025-02-19 11:46:22,764 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=732758368.79972, country=United States
+2025-02-19 11:46:22,966 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:46:23,058 - INFO - Form prediction completed successfully.
+2025-02-19 11:47:49,975 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2323.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=2621473820, country=United States
+2025-02-19 11:47:50,240 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:47:50,301 - INFO - Form prediction completed successfully.
+2025-02-19 11:48:05,955 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=2.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=2621473820, country=United States
+2025-02-19 11:48:06,331 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:48:06,385 - INFO - Form prediction completed successfully.
+2025-02-19 11:48:13,421 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=0.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=2621473820, country=United States
+2025-02-19 11:48:13,793 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:48:13,850 - INFO - Form prediction completed successfully.
+2025-02-19 11:48:20,486 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=1232.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=2621473820, country=United States
+2025-02-19 11:48:20,782 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:48:20,839 - INFO - Form prediction completed successfully.
+2025-02-19 11:48:22,955 - INFO - Received form data: user_id=22058, sex=1, signup_time=1739522580.0, purchase_time=1740213780.0, purchase_value=1232.0, device_id=26198186, source=SEO, browser=Chrome, age=39, ip_address=2621473820, country=United States
+2025-02-19 11:48:23,345 - INFO - Data preprocessing completed successfully.
+2025-02-19 11:48:23,406 - INFO - Form prediction completed successfully.

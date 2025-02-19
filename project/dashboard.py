@@ -22,7 +22,15 @@ from data_cleaning import (
 # Data Loading and Preprocessing
 # -----------------------------
 # Load the raw data
-df = load_data('../data/Fraud_Data.csv')
+# Detect if running inside a Docker container
+if os.path.exists("/.dockerenv"):
+    data_path = "/app/data/Fraud_Data.csv"  # Docker path
+else:
+    data_path = "../data/Fraud_Data.csv"  # Local path
+
+# Load data
+df = load_data(data_path)
+
 
 df = handle_missing_values(df)
 df = remove_duplicates(df)
@@ -232,4 +240,4 @@ app.layout = dbc.Container([
 ])
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", port=8050, debug=True)

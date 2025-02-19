@@ -100,3 +100,7 @@ Werkzeug==3.1.3
 wrapt==1.17.2
 zipp==3.21.0
 fastapi
+python-multipart
+uvicorn
+dash
+dash-bootstrap-components
