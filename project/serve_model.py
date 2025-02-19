@@ -159,6 +159,13 @@ async def predict_from_file(file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"status": "error", "detail": "Internal Server Error", "message": str(e)})
 
 # API endpoint for prediction
+# @app.post("/predict/form")
+# async def predict_form(user_id: str = Form(...), sex: str = Form(...), signup_time: int = Form(...),
+#                        purchase_time: int = Form(...), purchase_value: float = Form(...),
+#                        device_id: str = Form(...), source: str = Form(...), browser: str = Form(...),
+#                        age: int = Form(...), ip_address: str = Form(...), country: str = Form(...)):
+#     # Process the form data
+#     return {"message": "Data received successfully", "device_id": device_id}
 @app.post("/predict/form", response_model=PredictionResponse)
 async def predict_from_form(
     user_id: str = Form(...),
