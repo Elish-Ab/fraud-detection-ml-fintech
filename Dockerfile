@@ -14,8 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire application
 COPY . .
 
-# Expose ports for both FastAPI (8000) and Dash (8050)
-EXPOSE 8000 8050
+# Expose the port Railway assigns (default to 8000 if not set)
+# Note: EXPOSE is informational; what matters is binding to the correct port in your app.
+EXPOSE ${PORT:-8000}
 
 # Copy the supervisor configuration file
 COPY supervisord.conf /etc/supervisord.conf
