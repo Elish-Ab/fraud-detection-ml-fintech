@@ -10,8 +10,17 @@ def load_data(file_path):
     return pd.read_csv(file_path)
 
 # Function to handle missing values
-def handle_missing_values(df):
-    return df.dropna()
+def handle_missing_values(df, method='drop'):
+    if method == 'drop':
+        return df.dropna()
+    elif method == 'fill':
+        return df.fillna(0)  # Example: fill missing values with 0
+    elif method == 'ffill':
+        return df.fillna(method='ffill')  # Forward fill
+    elif method == 'bfill':
+        return df.fillna(method='bfill')  # Backward fill
+    else:
+        raise ValueError("Invalid method for handling missing values.")
 
 # Function to remove duplicates
 def remove_duplicates(df):
@@ -31,7 +40,15 @@ def correct_data_types(df):
     df['purchase_month'] = df['purchase_time'].dt.month
     df['purchase_day'] = df['purchase_time'].dt.day
     df['purchase_hour'] = df['purchase_time'].dt.hour
-    print(df['signup_year'].head())
+    # Extract useful features from the 'signup_time' and 'purchase_time' columns
+    df['signup_year'] = df['signup_time'].dt.year
+    df['signup_month'] = df['signup_time'].dt.month
+    df['signup_day'] = df['signup_time'].dt.day
+    df['signup_hour'] = df['signup_time'].dt.hour
+    df['purchase_year'] = df['purchase_time'].dt.year
+    df['purchase_month'] = df['purchase_time'].dt.month
+    df['purchase_day'] = df['purchase_time'].dt.day
+    df['purchase_hour'] = df['purchase_time'].dt.hour
     return df
 
 

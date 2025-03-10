@@ -193,7 +193,7 @@ def explain_model_with_shap(model, X_test):
     shap.force_plot(explainer.expected_value[0], shap_values[0][0], X_test.iloc[0])
     plt.show()  # Ensure SHAP plot is shown
 
-def train_all_models(df, target_col):
+def train_all_models(df, target_col, use_smote=True):
     """
     Prepares the data and trains all selected models for both datasets with hyperparameter tuning.
     """
