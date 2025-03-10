@@ -1,7 +1,6 @@
 import pytest
 import pandas as pd
-from ..scripts.model_training import prepare_data, evaluate_model, create_mlp_model_keras, train_all_models
-import pandas as pd
+from scripts.model_training import prepare_data, evaluate_model, create_mlp_model_keras, train_all_models
 
 def test_prepare_data():
     # Test data preparation with a sample DataFrame
@@ -50,5 +49,3 @@ def test_train_all_models():
     assert model_without_smote is not None  # Ensure model is trained
 
     # Additional assertions can be added to check model performance
-
-    # pytest.main()  # This line is not needed when running tests with pytest

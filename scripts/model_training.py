@@ -245,6 +245,7 @@ def train_all_models(df, target_col, use_smote=True):
     explain_model_with_shap(rnn_model, X_test)
 
 # Main Execution (adjust this as per your dataset)
-df = pd.read_csv("../data/Preprocessed_Data.csv") 
+df = pd.read_csv("data/Preprocessed_Data.csv")
+
 target_col = 'class'  
 train_all_models(df, target_col)
